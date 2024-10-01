@@ -3,5 +3,5 @@
 ## Team: Letsgoski
 
 ## Members:
-### Gianluca Maragliano (gianluca.maraglian@usi.ch)
+### Gianluca Maragliano (gianluca.maragliano@usi.ch)
 ### Raffaele Perri (raffaele.perri@usi.ch)
