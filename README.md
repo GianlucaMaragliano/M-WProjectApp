@@ -1,4 +1,4 @@
-# M-WProjectApp
+# Mobile & Wearable Computing 2024 Project App
 
 ## Team: Letsgoski
 
