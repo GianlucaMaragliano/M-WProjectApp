@@ -33,7 +33,7 @@ import com.anychart.enums.HoverMode;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
 import com.example.stepappv4.StepAppOpenHelper;
-import com.example.stepappv4.databinding.FragmentGalleryBinding;
+import com.example.stepappv4.databinding.FragmentReportBinding;
 import com.example.stepappv4.R;
 
 public class ReportFragment extends Fragment {
@@ -47,12 +47,12 @@ public class ReportFragment extends Fragment {
 
     public Map<Integer, Integer> stepsByHour = null;
 
-    private FragmentGalleryBinding binding;
+    private FragmentReportBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentGalleryBinding.inflate(inflater, container, false);
+        binding = FragmentReportBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // Create column chart
@@ -80,7 +80,6 @@ public class ReportFragment extends Fragment {
 
         // TODO 2 (YOUR TURN): Creating a new map that contains hours of the day from 0 to 23 and
         //  number of steps during each hour set to 0
-
 
         // TODO 3 (YOUR TURN): Replace the number of steps for each hour in graph_map
         //  with the number of steps read from the database

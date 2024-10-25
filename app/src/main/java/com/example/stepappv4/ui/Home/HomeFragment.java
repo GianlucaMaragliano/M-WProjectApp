@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.stepappv4.StepAppOpenHelper;
 import com.example.stepappv4.R;
-import com.example.stepappv4.databinding.FragmentHomeBinding;
+import com.example.stepappv4.databinding.FragmentStepsBinding;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
@@ -34,7 +34,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentStepsBinding binding;
 
     private TextView stepCountsView;
     private CircularProgressIndicator progressBar;
@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentStepsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         stepCountsView = (TextView) root.findViewById(R.id.counter);
