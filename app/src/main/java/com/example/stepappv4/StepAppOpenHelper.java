@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -126,6 +127,39 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
         return map;
     }
 
+
+    public static Map<String, Integer> loadStepsByDay(Context context, String date){
+        // 1. Define a map to store the day and number of steps as key-value pairs
+        Map<String, Integer>  map = new TreeMap<>();
+
+        // 2. Get the readable database
+        StepAppOpenHelper databaseHelper = new StepAppOpenHelper(context);
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+
+        // 3. Define the query to get the data
+        Cursor cursor = database.rawQuery("SELECT day, COUNT(*)  FROM num_steps " +
+                "GROUP BY day ORDER BY  day ASC ", null);
+
+        // 4. Iterate over returned elements on the cursor
+        if (cursor.moveToFirst()) {
+            do {
+                String day = cursor.getString(0);
+                int stepsCount = cursor.getInt(1);
+
+                Log.d("STORED STEPS", day + ": " + stepsCount);
+
+                // 5. Put the data from the database into the map
+                map.put(day, stepsCount);
+            } while (cursor.moveToNext());
+        }
+
+        // 5. Close the cursor and database
+        cursor.close();
+        database.close();
+
+        // 6. Return the map with days and number of stepss
+        return map;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
