@@ -139,7 +139,6 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
         // 3. Define the query to get the data
         Cursor cursor = database.rawQuery("SELECT day, COUNT(*)  FROM num_steps " +
                 "GROUP BY day ORDER BY  day ASC ", null);
-
         // 4. Iterate over returned elements on the cursor
         if (cursor.moveToFirst()) {
             do {
