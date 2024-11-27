@@ -15,6 +15,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "StepAppV5"
+rootProject.name = "Heart-Beat"
 include(":app")
  

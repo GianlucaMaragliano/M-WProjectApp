@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StepAppV3</string>
+    <string name="app_name">Heart/Beat</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -9,7 +9,7 @@
 
     <string name="menu_steps">Steps</string>
     <string name="menu_report">Report</string>
-    <string name="menu_profile">Profile</string>
+    <string name="menu_add_song">Add Song</string>
     <string name="menu_day">Daily Report</string>
 
     <string name="num_steps">0</string>

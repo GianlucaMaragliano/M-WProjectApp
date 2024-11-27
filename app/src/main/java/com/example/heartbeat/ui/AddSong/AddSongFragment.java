@@ -1,4 +1,4 @@
-package com.example.heartbeat.ui.Profile;
+package com.example.heartbeat.ui.AddSong;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -15,21 +15,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.heartbeat.StepAppOpenHelper;
-import com.example.heartbeat.databinding.FragmentProfileBinding;
+import com.example.heartbeat.databinding.FragmentAddSongBinding;
 
 import java.util.List;
 import java.util.Map;
 
-public class ProfileFragment extends Fragment {
+public class AddSongFragment extends Fragment {
 
     private static final int PICK_AUDIO_FILE = 1; // Request code for file picker
-    private FragmentProfileBinding binding;
+    private FragmentAddSongBinding binding;
     private String audioFilePath = null; // Store selected audio file path
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentProfileBinding.inflate(inflater, container, false);
+        binding = FragmentAddSongBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // Handle Select Audio button
@@ -63,7 +63,7 @@ public class ProfileFragment extends Fragment {
 
         List<Map<String, String>> songs_120_bpm = dbHelper.getSongsByBpmRange(100, 130);
         for (Map<String, String> song : songs_120_bpm) {
-            Log.d("Song BPM", "Title: " + song.get("title") + ", BPM: " + song.get("bpm"));
+            Log.d("Song 100-130 BPM", "Title: " + song.get("title") + ", BPM: " + song.get("bpm"));
         }
 
         // Validate inputs

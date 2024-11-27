@@ -1,14 +1,14 @@
-package com.example.heartbeat.ui.Profile;
+package com.example.heartbeat.ui.AddSong;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class ProfileViewModel extends ViewModel {
+public class AddSongViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public ProfileViewModel() {
+    public AddSongViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is slideshow fragment");
     }
