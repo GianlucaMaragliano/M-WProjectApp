@@ -1,4 +1,4 @@
-package com.example.stepappv4;
+package com.example.heartbeat;
 
 import android.content.Context;
 

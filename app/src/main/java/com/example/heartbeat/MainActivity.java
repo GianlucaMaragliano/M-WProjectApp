@@ -1,4 +1,4 @@
-package com.example.stepappv4;
+package com.example.heartbeat;
 
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -20,7 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 
-import com.example.stepappv4.databinding.ActivityMainBinding;
+import com.example.heartbeat.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 

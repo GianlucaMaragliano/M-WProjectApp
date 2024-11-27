@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.stepappv4"
+    namespace = "com.example.heartbeat"
     compileSdk = 33
 
     defaultConfig {

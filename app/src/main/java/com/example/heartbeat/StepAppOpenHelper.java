@@ -1,4 +1,4 @@
-package com.example.stepappv4;
+package com.example.heartbeat;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.TreeMap;
 public class StepAppOpenHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "stepapp";
+    private static final String DATABASE_NAME = "heartbeat";
     public static final String TABLE_NAME = "num_steps";
     public static final String KEY_ID = "id";
     public static final String KEY_TIMESTAMP = "timestamp";
@@ -26,6 +25,23 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
     public static final String KEY_HOUR = "hour";
     public static final String CREATE_TABLE_SQL = "CREATE TABLE  " + TABLE_NAME + " (" + KEY_ID + " INTEGER PRIMARY KEY, " +
             KEY_DAY + " TEXT, " + KEY_HOUR + "  TEXT, " + KEY_TIMESTAMP + "  TEXT);";
+
+
+    public static final String SONGS_TABLE_NAME = "songs";
+    public static final String SONG_KEY_ID = "id";
+    public static final String SONG_KEY_TITLE = "title";
+    public static final String SONG_KEY_ARTIST = "artist";
+    public static final String SONG_KEY_GENRE = "genre";
+    public static final String SONG_KEY_BPM = "bpm";
+    public static final String SONG_KEY_AUDIO_PATH = "audio_file_path";
+
+    public static final String CREATE_SONGS_TABLE_SQL = "CREATE TABLE " + SONGS_TABLE_NAME + " ("
+            + SONG_KEY_ID + " INTEGER PRIMARY KEY, "
+            + SONG_KEY_TITLE + " TEXT, "
+            + SONG_KEY_ARTIST + " TEXT, "
+            + SONG_KEY_GENRE + " TEXT, "
+            + SONG_KEY_BPM + " INTEGER, "
+            + SONG_KEY_AUDIO_PATH + " TEXT);";
 
     public StepAppOpenHelper (Context context)
     {
@@ -160,10 +176,112 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
         return map;
     }
 
+//    #############################################################################################################
+    public void insertSong(String title, String artist, String genre, int bpm, String audioFilePath) {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        String insertQuery = "INSERT INTO " + SONGS_TABLE_NAME + " ("
+                + SONG_KEY_TITLE + ", "
+                + SONG_KEY_ARTIST + ", "
+                + SONG_KEY_GENRE + ", "
+                + SONG_KEY_BPM + ", "
+                + SONG_KEY_AUDIO_PATH + ") VALUES (?, ?, ?, ?, ?)";
+        database.execSQL(insertQuery, new Object[]{title, artist, genre, bpm, audioFilePath});
+
+        database.close();
+    }
+
+    public void deleteSong(int songId) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.delete(SONGS_TABLE_NAME, SONG_KEY_ID + " = ?", new String[]{String.valueOf(songId)});
+        database.close();
+    }
+
+    public List<Map<String, String>> getAllSongs() {
+        SQLiteDatabase database = null;
+        Cursor cursor = null;
+        List<Map<String, String>> songs = new LinkedList<>();
+
+        try {
+            database = this.getReadableDatabase();
+            String query = "SELECT * FROM " + SONGS_TABLE_NAME;
+            cursor = database.rawQuery(query, null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    Map<String, String> song = new HashMap<>();
+                    song.put("title", cursor.getString(cursor.getColumnIndexOrThrow(SONG_KEY_TITLE)));
+                    song.put("artist", cursor.getString(cursor.getColumnIndexOrThrow(SONG_KEY_ARTIST)));
+                    song.put("genre", cursor.getString(cursor.getColumnIndexOrThrow(SONG_KEY_GENRE)));
+                    song.put("bpm", cursor.getString(cursor.getColumnIndexOrThrow(SONG_KEY_BPM)));
+                    song.put("audioPath", cursor.getString(cursor.getColumnIndexOrThrow(SONG_KEY_AUDIO_PATH)));
+                    songs.add(song);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            if (database != null && database.isOpen()) {
+                database.close();
+            }
+        }
+
+        return songs;
+    }
+
+
+    public List<Map<String, String>> getSongsByBpmRange(int minBpm, int maxBpm) {
+        SQLiteDatabase database = null;
+        Cursor cursor = null;
+        List<Map<String, String>> songs = new LinkedList<>();
+
+        try {
+            database = this.getReadableDatabase();
+
+            // Define the query
+            String query = "SELECT * FROM " + SONGS_TABLE_NAME + " WHERE " + SONG_KEY_BPM + " BETWEEN ? AND ?";
+            cursor = database.rawQuery(query, new String[]{String.valueOf(minBpm), String.valueOf(maxBpm)});
+
+            // Iterate through the results
+            if (cursor.moveToFirst()) {
+                do {
+                    Map<String, String> song = new HashMap<>();
+                    song.put("title", cursor.getString(cursor.getColumnIndexOrThrow(SONG_KEY_TITLE)));
+                    song.put("artist", cursor.getString(cursor.getColumnIndexOrThrow(SONG_KEY_ARTIST)));
+                    song.put("genre", cursor.getString(cursor.getColumnIndexOrThrow(SONG_KEY_GENRE)));
+                    song.put("bpm", cursor.getString(cursor.getColumnIndexOrThrow(SONG_KEY_BPM)));
+                    song.put("audioPath", cursor.getString(cursor.getColumnIndexOrThrow(SONG_KEY_AUDIO_PATH)));
+                    songs.add(song);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Always close cursor and database to prevent memory leaks
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            if (database != null && database.isOpen()) {
+                database.close();
+            }
+        }
+
+        return songs;
+    }
+
+
+//    #############################################################################################################
+
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         sqLiteDatabase.execSQL(CREATE_TABLE_SQL);
+
+        sqLiteDatabase.execSQL(CREATE_SONGS_TABLE_SQL);
     }
 
     @Override

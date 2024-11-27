@@ -7,25 +7,25 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.stepappv4.ui.Home.HomeFragment"
+        android:name="com.example.heartbeat.ui.Home.HomeFragment"
         android:label="@string/menu_steps"
         tools:layout="@layout/fragment_steps" />
 
     <fragment
         android:id="@+id/nav_gallery"
-        android:name="com.example.stepappv4.ui.Report.ReportFragment"
+        android:name="com.example.heartbeat.ui.Report.ReportFragment"
         android:label="@string/menu_report"
         tools:layout="@layout/fragment_report" />
 
     <fragment
         android:id="@+id/nav_daily"
-        android:name="com.example.stepappv4.ui.Day.DayFragment"
+        android:name="com.example.heartbeat.ui.Day.DayFragment"
         android:label="@string/menu_day"
         tools:layout="@layout/fragment_day" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.example.stepappv4.ui.Profile.ProfileFragment"
+        android:name="com.example.heartbeat.ui.Profile.ProfileFragment"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>

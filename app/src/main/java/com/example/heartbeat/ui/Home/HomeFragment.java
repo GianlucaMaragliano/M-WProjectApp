@@ -1,4 +1,4 @@
-package com.example.stepappv4.ui.Home;
+package com.example.heartbeat.ui.Home;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,19 +20,23 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.stepappv4.StepAppOpenHelper;
-import com.example.stepappv4.R;
-import com.example.stepappv4.databinding.FragmentStepsBinding;
+import com.example.heartbeat.StepAppOpenHelper;
+import com.example.heartbeat.R;
+import com.example.heartbeat.databinding.FragmentStepsBinding;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.text.SimpleDateFormat;
+import java.util.Map;
 import java.util.TimeZone;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
+
+    private StepAppOpenHelper dbHelper = new StepAppOpenHelper(getContext());
+
 
     private FragmentStepsBinding binding;
 

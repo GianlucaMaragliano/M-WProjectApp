@@ -1,24 +1,19 @@
-package com.example.stepappv4.ui.Report;
+package com.example.heartbeat.ui.Report;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.ColorLong;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.TreeMap;
 
 
@@ -32,9 +27,9 @@ import com.anychart.enums.Anchor;
 import com.anychart.enums.HoverMode;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
-import com.example.stepappv4.StepAppOpenHelper;
-import com.example.stepappv4.databinding.FragmentReportBinding;
-import com.example.stepappv4.R;
+import com.example.heartbeat.StepAppOpenHelper;
+import com.example.heartbeat.databinding.FragmentReportBinding;
+import com.example.heartbeat.R;
 
 public class ReportFragment extends Fragment {
 
