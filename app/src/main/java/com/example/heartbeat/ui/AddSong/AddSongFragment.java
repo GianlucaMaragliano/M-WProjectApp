@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,6 +21,7 @@ import com.example.heartbeat.databinding.FragmentAddSongBinding;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AddSongFragment extends Fragment {
 
@@ -32,11 +35,23 @@ public class AddSongFragment extends Fragment {
         binding = FragmentAddSongBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        ActivityResultLauncher<Intent> filePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
+                        Uri uri = result.getData().getData();
+                        if (uri != null) {
+                            audioFilePath = uri.toString();
+                            binding.selectedAudioPath.setText(audioFilePath); // Update the displayed file path
+                        }
+                    }
+                });
+
         // Handle Select Audio button
         binding.buttonSelectAudio.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("audio/*");
-            startActivityForResult(intent, PICK_AUDIO_FILE);
+            filePickerLauncher.launch(intent);
         });
 
         // Handle Add Song button
@@ -95,22 +110,10 @@ public class AddSongFragment extends Fragment {
         audioFilePath = null;
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_AUDIO_FILE && resultCode == getActivity().RESULT_OK && data != null) {
-            Uri uri = data.getData();
-            if (uri != null) {
-                audioFilePath = uri.toString();
-                binding.selectedAudioPath.setText(audioFilePath); // Update the displayed file path
-            }
-        }
     }
 }

@@ -34,6 +34,8 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
     public static final String SONG_KEY_GENRE = "genre";
     public static final String SONG_KEY_BPM = "bpm";
     public static final String SONG_KEY_AUDIO_PATH = "audio_file_path";
+    public static final String SONG_KEY_DURATION = "duration";
+
 
     public static final String CREATE_SONGS_TABLE_SQL = "CREATE TABLE " + SONGS_TABLE_NAME + " ("
             + SONG_KEY_ID + " INTEGER PRIMARY KEY, "
@@ -41,7 +43,8 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
             + SONG_KEY_ARTIST + " TEXT, "
             + SONG_KEY_GENRE + " TEXT, "
             + SONG_KEY_BPM + " INTEGER, "
-            + SONG_KEY_AUDIO_PATH + " TEXT);";
+            + SONG_KEY_AUDIO_PATH + " TEXT,"
+            + SONG_KEY_DURATION + " INTEGER);";
 
     public StepAppOpenHelper (Context context)
     {
