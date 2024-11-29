@@ -27,7 +27,7 @@ import com.anychart.enums.Anchor;
 import com.anychart.enums.HoverMode;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
-import com.example.heartbeat.StepAppOpenHelper;
+import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.databinding.FragmentReportBinding;
 import com.example.heartbeat.R;
 
@@ -72,7 +72,7 @@ public class ReportFragment extends Fragment {
         //***** Read data from SQLiteDatabase *********/
         // TODO 1 (YOUR TURN): Get the map with hours and number of steps for today
         //  from the database and assign it to variable stepsByHour
-        stepsByHour = StepAppOpenHelper.loadStepsByHour(getContext(), current_time);
+        stepsByHour = HeartBeatOpenHelper.loadStepsByHour(getContext(), current_time);
 
         // TODO 2 (YOUR TURN): Creating a new map that contains hours of the day from 0 to 23 and
         //  number of steps during each hour set to 0

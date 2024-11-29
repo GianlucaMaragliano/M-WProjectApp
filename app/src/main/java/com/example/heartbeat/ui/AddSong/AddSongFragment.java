@@ -13,15 +13,13 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.heartbeat.StepAppOpenHelper;
+import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.databinding.FragmentAddSongBinding;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class AddSongFragment extends Fragment {
 
@@ -68,7 +66,7 @@ public class AddSongFragment extends Fragment {
         String genre = binding.inputGenre.getText().toString().trim();
         String bpmText = binding.inputBpm.getText().toString().trim();
 
-        StepAppOpenHelper dbHelper = new StepAppOpenHelper(getContext());
+        HeartBeatOpenHelper dbHelper = new HeartBeatOpenHelper(getContext());
 
 
         List<Map<String, String>> songs = dbHelper.getAllSongs();

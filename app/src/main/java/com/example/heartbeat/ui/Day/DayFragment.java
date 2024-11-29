@@ -28,7 +28,7 @@ import com.anychart.enums.Anchor;
 import com.anychart.enums.HoverMode;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
-import com.example.heartbeat.StepAppOpenHelper;
+import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.databinding.FragmentDayBinding;
 import com.example.heartbeat.R;
 
@@ -72,7 +72,7 @@ public class DayFragment extends Fragment {
 
     public Cartesian createColumnChart(){
         //***** Read data from SQLiteDatabase *********/
-        stepsByDay = StepAppOpenHelper.loadStepsByDay(getContext(), current_time);
+        stepsByDay = HeartBeatOpenHelper.loadStepsByDay(getContext(), current_time);
 
         Map<String, Integer> graph_map = new TreeMap<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

@@ -1,33 +1,22 @@
 package com.example.heartbeat.ui.Play;
 
-import android.content.ContentResolver;
-import android.content.res.AssetFileDescriptor;
-import android.media.AudioAttributes;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.heartbeat.R;
-import com.example.heartbeat.StepAppOpenHelper;
+import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.SoundManager;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 public class PlayFragment extends Fragment {
 
-    private StepAppOpenHelper databaseHelper;
+    private HeartBeatOpenHelper databaseHelper;
     private SoundManager soundManager;
 
     @Override

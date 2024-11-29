@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,7 +16,7 @@ public class SoundManager {
     private static SoundManager soundManagerInstance = null;
     private MediaPlayer mediaPlayer;
     private final Context context;
-    private StepAppOpenHelper databaseHelper;
+    private HeartBeatOpenHelper databaseHelper;
 
     // To track the current song details
     private String currentSongTitle;
@@ -40,7 +38,7 @@ public class SoundManager {
     // Constructor
     private SoundManager(Context context) {
         this.context = context;
-        databaseHelper = new StepAppOpenHelper(context);
+        databaseHelper = new HeartBeatOpenHelper(context);
     }
 
 
@@ -54,7 +52,9 @@ public class SoundManager {
 
         // Pick a random song
         Random random = new Random();
-        Map<String, String> randomSong = songs.get(random.nextInt(songs.size()));
+        int randomIndex = random.nextInt(songs.size());
+        Log.d("RandomIndex", "Index: " + randomIndex);
+        Map<String, String> randomSong = songs.get(randomIndex);
 
         String audioPath = randomSong.get("audioPath");
         currentSongTitle = randomSong.get("title");

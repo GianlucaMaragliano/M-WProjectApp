@@ -20,14 +20,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.heartbeat.StepAppOpenHelper;
+import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.R;
 import com.example.heartbeat.databinding.FragmentStepsBinding;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.text.SimpleDateFormat;
-import java.util.Map;
 import java.util.TimeZone;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private StepAppOpenHelper dbHelper = new StepAppOpenHelper(getContext());
+    private HeartBeatOpenHelper dbHelper = new HeartBeatOpenHelper(getContext());
 
 
     private FragmentStepsBinding binding;
@@ -75,7 +74,7 @@ public class HomeFragment extends Fragment {
 
         stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
-        StepAppOpenHelper databaseOpenHelper = new StepAppOpenHelper(this.getContext());
+        HeartBeatOpenHelper databaseOpenHelper = new HeartBeatOpenHelper(this.getContext());
         SQLiteDatabase database = databaseOpenHelper.getWritableDatabase();
 
 
@@ -226,12 +225,12 @@ class  StepCounterListener implements SensorEventListener{
                 progressBar.setProgress(accStepCounter);
 
                 ContentValues databaseEntry = new ContentValues();
-                databaseEntry.put(StepAppOpenHelper.KEY_TIMESTAMP, timePointList.get(i));
+                databaseEntry.put(HeartBeatOpenHelper.KEY_TIMESTAMP, timePointList.get(i));
 
-                databaseEntry.put(StepAppOpenHelper.KEY_DAY, this.day);
-                databaseEntry.put(StepAppOpenHelper.KEY_HOUR, this.hour);
+                databaseEntry.put(HeartBeatOpenHelper.KEY_DAY, this.day);
+                databaseEntry.put(HeartBeatOpenHelper.KEY_HOUR, this.hour);
 
-                database.insert(StepAppOpenHelper.TABLE_NAME, null, databaseEntry);
+                database.insert(HeartBeatOpenHelper.TABLE_NAME, null, databaseEntry);
 
             }
         }
