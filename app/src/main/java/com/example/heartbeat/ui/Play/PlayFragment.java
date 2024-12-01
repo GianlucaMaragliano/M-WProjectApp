@@ -19,14 +19,24 @@ public class PlayFragment extends Fragment {
     private HeartBeatOpenHelper databaseHelper;
     private SoundManager soundManager;
 
+    // Method to convert heart rate to suggested BPM range
+    private int calculateTargetBPM(int heartRate) {
+        // Example conversion: Use a linear relationship for now
+        if (heartRate < 100) return (int) (heartRate * 1.5);
+        if (heartRate < 140) return (int) (heartRate * 1.2);
+        return (int) (heartRate * 1.1); // Scale down for high heart rates
+    }
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_play, container, false);
         // Fake heart rate (for now)
 //        int fakeHeartRate = new Random().nextInt(80) + 60; // Random BPM between 60-140
         int fakeHeartRate = 120; // BPM = 120
+        int targetBPM = calculateTargetBPM(fakeHeartRate);
         TextView heartRateText = root.findViewById(R.id.heart_rate_text);
-        heartRateText.setText("Fake Heart Rate: " + fakeHeartRate + " BPM");
+        heartRateText.setText("Heart Rate: " + fakeHeartRate + " BPM | Target BPM: " + targetBPM);
 
         soundManager = SoundManager.getInstance(getContext());
 
@@ -39,7 +49,7 @@ public class PlayFragment extends Fragment {
         // Find a button and set its click listener
         Button playButton = root.findViewById(R.id.play_button);
         playButton.setOnClickListener(v -> {
-            soundManager.playRandomSong(fakeHeartRate);
+            soundManager.playRandomSong(targetBPM);
 
             // Update the UI with the song details
             songTitle.setText(soundManager.getCurrentSongTitle());

@@ -26,5 +26,10 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/music_1005_svgrepo_com"
             android:title="@string/menu_add_song" />
+
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/music_1005_svgrepo_com"
+            android:title="@string/menu_history" />
     </group>
 </menu>

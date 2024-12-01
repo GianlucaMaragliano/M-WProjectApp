@@ -44,7 +44,7 @@ public class SoundManager {
 
     public void playRandomSong(int heartRate) {
         // Query songs based on BPM range
-        List<Map<String, String>> songs = databaseHelper.getSongsByBpmRange(heartRate - 10, heartRate + 10);
+        List<Map<String, String>> songs = databaseHelper.getSongsByBpmRange(heartRate, heartRate + 10);
         if (songs.isEmpty()) {
             Toast.makeText(context, "No songs found for current BPM range!", Toast.LENGTH_SHORT).show();
             return;

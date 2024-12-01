@@ -46,6 +46,20 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
             + SONG_KEY_AUDIO_PATH + " TEXT,"
             + SONG_KEY_DURATION + " INTEGER);";
 
+    // The new table for workout history has to contain different dates and based on the date contains a number of songs
+    public static final String WORKOUT_HISTORY_TABLE_NAME = "workout_history";
+    public static final String WORKOUT_KEY_ID = "id";
+    public static final String WORKOUT_KEY_DATE = "date";
+    public static final String WORKOUT_KEY_SONGS = "songs";
+    public static final String WORKOUT_KEY_DURATION = "duration";
+
+    public static final String CREATE_WORKOUT_HISTORY_TABLE_SQL = "CREATE TABLE " + WORKOUT_HISTORY_TABLE_NAME + " ("
+            + WORKOUT_KEY_ID + " INTEGER PRIMARY KEY, "
+            + WORKOUT_KEY_DATE + " TEXT, "
+            + WORKOUT_KEY_SONGS + " TEXT, "
+            + WORKOUT_KEY_DURATION + " INTEGER);";
+
+
     public HeartBeatOpenHelper(Context context)
     {
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
@@ -192,6 +206,57 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         database.execSQL(insertQuery, new Object[]{title, artist, genre, bpm, audioFilePath});
 
         database.close();
+    }
+
+    // Method for inserting a song into workout history
+    public void insertWorkoutSong(String date, String songs, int duration) {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        String insertQuery = "INSERT INTO " + WORKOUT_HISTORY_TABLE_NAME + " ("
+                + WORKOUT_KEY_DATE + ", "
+                + WORKOUT_KEY_SONGS + ", "
+                + WORKOUT_KEY_DURATION + ") VALUES (?, ?, ?)";
+        database.execSQL(insertQuery, new Object[]{date, songs, duration});
+
+        database.close();
+    }
+
+    // Method for retrieving all the songs from workout history based on the date
+    public List<Map<String, String>> getWorkoutSongsByDate(String date) {
+        SQLiteDatabase database = null;
+        Cursor cursor = null;
+        List<Map<String, String>> songs = new LinkedList<>();
+
+        try {
+            database = this.getReadableDatabase();
+
+            // Define the query
+            String query = "SELECT * FROM " + WORKOUT_HISTORY_TABLE_NAME + " WHERE " + WORKOUT_KEY_DATE + " = ?";
+            cursor = database.rawQuery(query, new String[]{date});
+
+            // Iterate through the results
+            if (cursor.moveToFirst()) {
+                do {
+                    Map<String, String> song = new HashMap<>();
+                    song.put("date", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_DATE)));
+                    song.put("songs", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONGS)));
+                    song.put("duration", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_DURATION)));
+                    songs.add(song);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Always close cursor and database to prevent memory leaks
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+            if (database != null && database.isOpen()) {
+                database.close();
+            }
+        }
+
+        return songs;
     }
 
     public void deleteSong(int songId) {
