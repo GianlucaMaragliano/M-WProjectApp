@@ -1,11 +1,14 @@
 package com.example.heartbeat.ui.Play;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -18,12 +21,14 @@ public class PlayFragment extends Fragment {
 
     private HeartBeatOpenHelper databaseHelper;
     private SoundManager soundManager;
+    private ProgressBar songProgress;
+    private Handler progressHandler;
+    private Runnable progressRunnable;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_play, container, false);
-        // Fake heart rate (for now)
-//        int fakeHeartRate = new Random().nextInt(80) + 60; // Random BPM between 60-140
+
         int fakeHeartRate = 120; // BPM = 120
         TextView heartRateText = root.findViewById(R.id.heart_rate_text);
         heartRateText.setText("Fake Heart Rate: " + fakeHeartRate + " BPM");
@@ -35,8 +40,11 @@ public class PlayFragment extends Fragment {
         TextView songArtist = root.findViewById(R.id.song_artist);
         TextView songBPM = root.findViewById(R.id.song_bpm);
         Button playPauseButton = root.findViewById(R.id.play_pause_button);
+        songProgress = root.findViewById(R.id.song_progress);
 
-        // Find a button and set its click listener
+        progressHandler = new Handler();
+
+        // Play button functionality
         Button playButton = root.findViewById(R.id.play_button);
         playButton.setOnClickListener(v -> {
             soundManager.playRandomSong(fakeHeartRate);
@@ -46,8 +54,18 @@ public class PlayFragment extends Fragment {
             songArtist.setText(soundManager.getCurrentSongArtist());
             songBPM.setText("BPM: " + soundManager.getCurrentSongBPM());
 
-            // Enable the play/pause button after starting the song
+            // Enable play/pause button and reset progress
             playPauseButton.setVisibility(View.VISIBLE);
+            songProgress.setProgress(0);
+
+            // Start progress updates
+            startProgressUpdate();
+
+            soundManager.setOnCompletionListener(mp -> {
+                playPauseButton.setText("Play"); // Reset Play button text
+                Toast.makeText(getContext(), "Song finished!", Toast.LENGTH_SHORT).show();
+                // Stop any progress tracking if added
+            });
         });
 
         // Play/Pause Button functionality
@@ -63,9 +81,38 @@ public class PlayFragment extends Fragment {
         return root;
     }
 
+    private void startProgressUpdate() {
+        progressRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (soundManager.isPlaying()) {
+                    int currentPosition = soundManager.getCurrentPosition();
+                    int duration = soundManager.getDuration();
+
+                    // Update progress bar
+                    if (duration > 0) {
+                        int progress = (int) ((currentPosition / (float) duration) * 100);
+                        songProgress.setProgress(progress);
+                    }
+
+                    // Schedule the next update
+                    progressHandler.postDelayed(this, 1000);
+                }
+            }
+        };
+
+        progressHandler.post(progressRunnable);
+    }
+
+    private void stopProgressUpdate() {
+        progressHandler.removeCallbacks(progressRunnable);
+        songProgress.setProgress(0);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+        stopProgressUpdate();
         soundManager.stopSound();
     }
 }

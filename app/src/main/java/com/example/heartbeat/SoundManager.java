@@ -16,7 +16,9 @@ public class SoundManager {
     private static SoundManager soundManagerInstance = null;
     private MediaPlayer mediaPlayer;
     private final Context context;
-    private HeartBeatOpenHelper databaseHelper;
+    private final HeartBeatOpenHelper databaseHelper;
+
+    private MediaPlayer.OnCompletionListener onCompletionListener;
 
     // To track the current song details
     private String currentSongTitle;
@@ -68,6 +70,7 @@ public class SoundManager {
     private void playSong(String file_name) {
         if (mediaPlayer != null) {
             mediaPlayer.release();
+            mediaPlayer = null;
         }
 
         mediaPlayer = new MediaPlayer();
@@ -85,8 +88,14 @@ public class SoundManager {
                     afd.getLength());
             afd.close();
             mediaPlayer.prepare();
+
+            // Detect when the song finishes
+            mediaPlayer.setOnCompletionListener(mp -> {
+                Toast.makeText(context, "Song finished!", Toast.LENGTH_SHORT).show();
+            });
         } catch (final Exception e) {
             e.printStackTrace();
+            Log.e("MediaPlayer", "Error occurred while playing song: " + file_name, e);
         }
         mediaPlayer.start();
         Log.d("AudioPath", "Playing: " + file_name);
@@ -125,5 +134,20 @@ public class SoundManager {
 
     public boolean isPlaying() {
         return mediaPlayer != null && mediaPlayer.isPlaying();
+    }
+
+    public void setOnCompletionListener(MediaPlayer.OnCompletionListener listener) {
+        this.onCompletionListener = listener;
+        if (mediaPlayer != null) {
+            mediaPlayer.setOnCompletionListener(onCompletionListener);
+        }
+    }
+
+    public int getCurrentPosition() {
+        return mediaPlayer != null ? mediaPlayer.getCurrentPosition() : 0;
+    }
+
+    public int getDuration() {
+        return mediaPlayer != null ? mediaPlayer.getDuration() : 0;
     }
 }

@@ -51,6 +51,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/heart_rate_text" />
 
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/song_progress"
+        android:layout_width="346dp"
+        android:layout_height="348dp"
+        android:layout_gravity="center"
+        android:indeterminate="false"
+        app:indicatorColor="?attr/colorOnTertiaryContainer"
+        app:indicatorSize="304dp"
+        app:layout_constraintBottom_toBottomOf="@+id/song_artist"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/song_bpm"
+        app:layout_constraintVertical_bias="0.479"
+        app:trackColor="?attr/colorTertiaryContainer"
+        app:trackThickness="42dp" />
+
     <Button
         android:id="@+id/play_pause_button"
         android:layout_width="wrap_content"
@@ -59,8 +76,10 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/play_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/song_artist" />
+        app:layout_constraintTop_toBottomOf="@+id/song_artist"
+        app:layout_constraintVertical_bias="0.743" />
 
     <Button
         android:id="@+id/play_button"
@@ -69,8 +88,9 @@
         android:text="Play Random Song"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.833" />
+        app:layout_constraintVertical_bias="0.884" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
