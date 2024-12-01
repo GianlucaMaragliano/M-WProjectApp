@@ -192,7 +192,7 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         cursor.close();
         database.close();
 
-        // 6. Return the map with days and number of stepss
+        // 6. Return the map with days and number of steps
         return map;
     }
 
@@ -261,18 +261,6 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         }
 
         return songs;
-    }
-
-    public void insertWorkoutHistory(String date, String songTitle, String songArtist, int songBPM) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(WORKOUT_KEY_DATE, date);
-        values.put(WORKOUT_KEY_SONG_TITLE, songTitle);
-        values.put(WORKOUT_KEY_SONG_ARTIST, songArtist);
-        values.put(WORKOUT_KEY_SONG_BPM, songBPM);
-
-        db.insert(WORKOUT_HISTORY_TABLE_NAME, null, values);
-        db.close();
     }
 
     public void deleteSong(int songId) {
@@ -366,17 +354,21 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_SQL);
 
         sqLiteDatabase.execSQL(CREATE_SONGS_TABLE_SQL);
+        try {
+            sqLiteDatabase.execSQL(CREATE_WORKOUT_HISTORY_TABLE_SQL);
+        } catch ( Exception e) {
+            Log.e("Database Error", "Error creating table", e);
+        }
 
-        sqLiteDatabase.execSQL(CREATE_WORKOUT_HISTORY_TABLE_SQL);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        // Drop older tables if existed
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SONGS_TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WORKOUT_HISTORY_TABLE_NAME);
-        // Create tables again
-        onCreate(sqLiteDatabase);
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        if (oldVersion != newVersion) {
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SONGS_TABLE_NAME);
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WORKOUT_HISTORY_TABLE_NAME);
+            onCreate(sqLiteDatabase);
+        }
     }
 }

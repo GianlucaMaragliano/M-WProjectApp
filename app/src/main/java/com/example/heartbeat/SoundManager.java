@@ -63,9 +63,8 @@ public class SoundManager {
         currentSongBPM = Integer.parseInt(randomSong.get("bpm"));
         Date date = new Date();
         String dateStr = date.toString();
-        // print the type of the dateStr
-        System.out.println(dateStr.getClass().getName());
 
+        // Insert the song into the workout history
         databaseHelper.insertWorkoutSong(dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
 
         playSong("SoundLib/" + randomSong.get("title") + ".m4a");
