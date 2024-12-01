@@ -103,12 +103,12 @@ public class SoundManager {
 
 
     public void togglePlayPause() {
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.pause();
-            } else {
-                mediaPlayer.start();
-            }
+        if (mediaPlayer == null) return;
+
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        } else {
+            mediaPlayer.start();
         }
     }
 

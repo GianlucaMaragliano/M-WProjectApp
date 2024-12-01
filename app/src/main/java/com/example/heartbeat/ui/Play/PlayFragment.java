@@ -65,6 +65,8 @@ public class PlayFragment extends Fragment {
                 playPauseButton.setText("Play"); // Reset Play button text
                 Toast.makeText(getContext(), "Song finished!", Toast.LENGTH_SHORT).show();
                 // Stop any progress tracking if added
+                stopProgressUpdate();
+                songProgress.setProgress(0);
             });
         });
 
@@ -73,8 +75,10 @@ public class PlayFragment extends Fragment {
             soundManager.togglePlayPause();
             if (soundManager.isPlaying()) {
                 playPauseButton.setText("Pause");
+                startProgressUpdate(); // Resume progress update when song is resumed
             } else {
                 playPauseButton.setText("Play");
+                stopProgressUpdate(); // Pause progress update when song is paused
             }
         });
 
@@ -106,13 +110,13 @@ public class PlayFragment extends Fragment {
 
     private void stopProgressUpdate() {
         progressHandler.removeCallbacks(progressRunnable);
-        songProgress.setProgress(0);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         stopProgressUpdate();
+        songProgress.setProgress(0);
         soundManager.stopSound();
     }
 }
