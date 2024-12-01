@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -60,6 +61,12 @@ public class SoundManager {
         currentSongTitle = randomSong.get("title");
         currentSongArtist = randomSong.get("artist");
         currentSongBPM = Integer.parseInt(randomSong.get("bpm"));
+        Date date = new Date();
+        String dateStr = date.toString();
+        // print the type of the dateStr
+        System.out.println(dateStr.getClass().getName());
+
+        databaseHelper.insertWorkoutSong(dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
 
         playSong("SoundLib/" + randomSong.get("title") + ".m4a");
 

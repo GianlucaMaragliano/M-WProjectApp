@@ -52,10 +52,13 @@ public class PlayFragment extends Fragment {
             soundManager.playRandomSong(targetBPM);
 
             // Update the UI with the song details
-            songTitle.setText(soundManager.getCurrentSongTitle());
-            songArtist.setText(soundManager.getCurrentSongArtist());
-            songBPM.setText("BPM: " + soundManager.getCurrentSongBPM());
+            String titleSong = soundManager.getCurrentSongTitle();
+            String artistSong = soundManager.getCurrentSongArtist();
+            int bpmSong = soundManager.getCurrentSongBPM();
 
+            songTitle.setText(titleSong);
+            songArtist.setText(artistSong);
+            songBPM.setText("BPM: " + bpmSong);
             // Enable the play/pause button after starting the song
             playPauseButton.setVisibility(View.VISIBLE);
         });

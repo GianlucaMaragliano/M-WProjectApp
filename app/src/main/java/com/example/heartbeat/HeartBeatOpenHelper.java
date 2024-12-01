@@ -1,5 +1,6 @@
 package com.example.heartbeat;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,7 +17,7 @@ import java.util.TreeMap;
 
 public class HeartBeatOpenHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "heartbeat";
     public static final String TABLE_NAME = "num_steps";
     public static final String KEY_ID = "id";
@@ -47,17 +48,19 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
             + SONG_KEY_DURATION + " INTEGER);";
 
     // The new table for workout history has to contain different dates and based on the date contains a number of songs
-    public static final String WORKOUT_HISTORY_TABLE_NAME = "workout_history";
+    public static final String WORKOUT_HISTORY_TABLE_NAME = "history_workout";
     public static final String WORKOUT_KEY_ID = "id";
     public static final String WORKOUT_KEY_DATE = "date";
-    public static final String WORKOUT_KEY_SONGS = "songs";
-    public static final String WORKOUT_KEY_DURATION = "duration";
+    public static final String WORKOUT_KEY_SONG_TITLE = "songTitle";
+    public static final String WORKOUT_KEY_SONG_ARTIST = "songArtist";
+    public static final String WORKOUT_KEY_SONG_BPM = "songBpm";
 
     public static final String CREATE_WORKOUT_HISTORY_TABLE_SQL = "CREATE TABLE " + WORKOUT_HISTORY_TABLE_NAME + " ("
             + WORKOUT_KEY_ID + " INTEGER PRIMARY KEY, "
             + WORKOUT_KEY_DATE + " TEXT, "
-            + WORKOUT_KEY_SONGS + " TEXT, "
-            + WORKOUT_KEY_DURATION + " INTEGER);";
+            + WORKOUT_KEY_SONG_TITLE + " TEXT, "
+            + WORKOUT_KEY_SONG_ARTIST + " TEXT, "
+            + WORKOUT_KEY_SONG_BPM + " INTEGER);";
 
 
     public HeartBeatOpenHelper(Context context)
@@ -209,15 +212,15 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
     }
 
     // Method for inserting a song into workout history
-    public void insertWorkoutSong(String date, String songs, int duration) {
+    public void insertWorkoutSong(String date, String songTitle, String songArtist, int songBpm) {
         SQLiteDatabase database = this.getWritableDatabase();
 
         String insertQuery = "INSERT INTO " + WORKOUT_HISTORY_TABLE_NAME + " ("
                 + WORKOUT_KEY_DATE + ", "
-                + WORKOUT_KEY_SONGS + ", "
-                + WORKOUT_KEY_DURATION + ") VALUES (?, ?, ?)";
-        database.execSQL(insertQuery, new Object[]{date, songs, duration});
-
+                + WORKOUT_KEY_SONG_TITLE + ", "
+                + WORKOUT_KEY_SONG_ARTIST + ", "
+                + WORKOUT_KEY_SONG_BPM + ") VALUES (?, ?, ?, ?)";
+        database.execSQL(insertQuery, new Object[]{date, songTitle, songArtist, songBpm});
         database.close();
     }
 
@@ -239,8 +242,9 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
                 do {
                     Map<String, String> song = new HashMap<>();
                     song.put("date", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_DATE)));
-                    song.put("songs", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONGS)));
-                    song.put("duration", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_DURATION)));
+                    song.put("title", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_TITLE)));
+                    song.put("artist", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_ARTIST)));
+                    song.put("bpm", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_BPM)));
                     songs.add(song);
                 } while (cursor.moveToNext());
             }
@@ -257,6 +261,18 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         }
 
         return songs;
+    }
+
+    public void insertWorkoutHistory(String date, String songTitle, String songArtist, int songBPM) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(WORKOUT_KEY_DATE, date);
+        values.put(WORKOUT_KEY_SONG_TITLE, songTitle);
+        values.put(WORKOUT_KEY_SONG_ARTIST, songArtist);
+        values.put(WORKOUT_KEY_SONG_BPM, songBPM);
+
+        db.insert(WORKOUT_HISTORY_TABLE_NAME, null, values);
+        db.close();
     }
 
     public void deleteSong(int songId) {
@@ -350,10 +366,17 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_SQL);
 
         sqLiteDatabase.execSQL(CREATE_SONGS_TABLE_SQL);
+
+        sqLiteDatabase.execSQL(CREATE_WORKOUT_HISTORY_TABLE_SQL);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        // Drop older tables if existed
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SONGS_TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WORKOUT_HISTORY_TABLE_NAME);
+        // Create tables again
+        onCreate(sqLiteDatabase);
     }
 }
