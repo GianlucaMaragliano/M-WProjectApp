@@ -37,6 +37,9 @@ public class PlayFragment extends Fragment {
 
         int fakeHeartRate = 120; // BPM = 120
 
+        int targetBPM = calculateTargetBPM(fakeHeartRate);
+        TextView heartRateText = root.findViewById(R.id.heart_rate_text);
+        heartRateText.setText("Heart Rate: " + fakeHeartRate + " BPM | Target BPM: " + targetBPM);
 
         // Initialize heart rate text view
         heartRateText = root.findViewById(R.id.heart_rate_text);
@@ -59,7 +62,7 @@ public class PlayFragment extends Fragment {
         playButton.setOnClickListener(v -> {
 //            if (currentHeartRate > 0) {
 //                soundManager.playRandomSong((int)currentHeartRate);
-            soundManager.playRandomSong(fakeHeartRate);
+            soundManager.playRandomSong(targetBPM);
 
                 // Update the UI with song details
                 songTitle.setText(soundManager.getCurrentSongTitle());
@@ -74,7 +77,7 @@ public class PlayFragment extends Fragment {
                 startProgressUpdate();
 
                 soundManager.setOnCompletionListener(mp -> {
-                    playPauseButton.setText("Play"); // Reset Play button text
+                    playPauseButton.setText("Pause"); // Reset Play button text
                     stopProgressUpdate();
                     songProgress.setProgress(0);
 
@@ -151,6 +154,14 @@ public class PlayFragment extends Fragment {
 
     private void stopProgressUpdate() {
         progressHandler.removeCallbacks(progressRunnable);
+    }
+
+    // Method to convert heart rate to suggested BPM range
+    private int calculateTargetBPM(int heartRate) {
+        // Example conversion: Use a linear relationship for now
+        if (heartRate < 100) return (int) (heartRate * 1.5);
+        if (heartRate < 140) return (int) (heartRate * 1.2);
+        return (int) (heartRate * 1.1); // Scale down for high heart rates
     }
 
     @Override

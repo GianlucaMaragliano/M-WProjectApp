@@ -40,6 +40,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.navigation:navigation-fragment:2.7.0-alpha01")
     implementation("androidx.navigation:navigation-ui:2.7.0-alpha01")
+    implementation("androidx.cardview:cardview:1.0.0")
 //    TODO 0: Add depedency for AnyCharts
     implementation ("com.github.AnyChart:AnyChart-Android:1.1.5")
     implementation("com.google.android.gms:play-services-wearable:18.1.0")

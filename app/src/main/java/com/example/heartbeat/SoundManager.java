@@ -7,9 +7,12 @@ import android.media.MediaPlayer;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.text.SimpleDateFormat;
 
 public class SoundManager {
 
@@ -46,7 +49,7 @@ public class SoundManager {
 
     public void playRandomSong(int heartRate) {
         // Query songs based on BPM range
-        List<Map<String, String>> songs = databaseHelper.getSongsByBpmRange(heartRate - 10, heartRate + 10);
+        List<Map<String, String>> songs = databaseHelper.getSongsByBpmRange(heartRate, heartRate + 10);
         if (songs.isEmpty()) {
             Toast.makeText(context, "No songs found for current BPM range!", Toast.LENGTH_SHORT).show();
             return;
@@ -62,6 +65,11 @@ public class SoundManager {
         currentSongTitle = randomSong.get("title");
         currentSongArtist = randomSong.get("artist");
         currentSongBPM = Integer.parseInt(randomSong.get("bpm"));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String dateStr = dateFormat.format(new Date());  // Gets current date in the format "2024-12-02"
+
+        // Insert the song into the workout history
+        databaseHelper.insertWorkoutSong(dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
 
         playSong("SoundLib/" + randomSong.get("title") + ".m4a");
 

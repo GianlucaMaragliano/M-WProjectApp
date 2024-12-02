@@ -34,4 +34,10 @@
         android:name="com.example.heartbeat.ui.Play.PlayFragment"
         android:label="@string/menu_play_song"
         tools:layout="@layout/fragment_play" />
+
+    <fragment
+        android:id="@+id/nav_history"
+        android:name="com.example.heartbeat.ui.WorkoutHistory.HistoryFragment"
+        android:label="@string/menu_history"
+        tools:layout="@layout/fragment_history" />
 </navigation>
