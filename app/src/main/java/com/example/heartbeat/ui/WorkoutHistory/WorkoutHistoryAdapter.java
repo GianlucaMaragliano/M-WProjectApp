@@ -5,52 +5,70 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.example.heartbeat.R;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAdapter.WorkoutHistoryViewHolder> {
+public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAdapter.ViewHolder> {
+    private final Map<String, List<Map<String, String>>> groupedHistory;
 
-    private List<Map<String, String>> workoutHistoryList;
+    public WorkoutHistoryAdapter(Map<String, List<Map<String, String>>> groupedHistory) {
+        this.groupedHistory = groupedHistory;
+    }
 
-    public WorkoutHistoryAdapter(List<Map<String, String>> workoutHistoryList) {
-        this.workoutHistoryList = workoutHistoryList;
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_workout_history, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public WorkoutHistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_workout_history, parent, false);
-        return new WorkoutHistoryViewHolder(view);
-    }
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        // Convert groupedHistory keys to a list to access by position
+        List<String> workoutIds = new ArrayList<>(groupedHistory.keySet());
+        String workoutId = workoutIds.get(position);
+        List<Map<String, String>> songs = groupedHistory.get(workoutId);
 
-    @Override
-    public void onBindViewHolder(WorkoutHistoryViewHolder holder, int position) {
-        Map<String, String> workout = workoutHistoryList.get(position);
-
-        holder.timeTextView.setText(workout.get("timestamp"));
-        holder.titleTextView.setText(workout.get("title"));
-        holder.artistTextView.setText(workout.get("artist"));
-        holder.bpmTextView.setText(workout.get("bpm"));
+        // Bind workout ID and songs to the ViewHolder
+        holder.workoutIdView.setText("Workout #" + (position + 1));
+        holder.songsView.setText(formatSongs(songs));
     }
 
     @Override
     public int getItemCount() {
-        return workoutHistoryList.size();
+        return groupedHistory.size();
     }
 
-    public static class WorkoutHistoryViewHolder extends RecyclerView.ViewHolder {
-        TextView timeTextView;
-        TextView titleTextView;
-        TextView artistTextView;
-        TextView bpmTextView;
+    private String formatSongs(List<Map<String, String>> songs) {
+        StringBuilder formatted = new StringBuilder();
+        for (Map<String, String> song : songs) {
+            formatted.append(
+                    song.get("timestamp"))
+                    .append(" - ")
+                    .append(song.get("title"))
+                    .append(" by ")
+                    .append(song.get("artist"))
+                    .append("\n");
+        }
+        return formatted.toString();
+    }
 
-        public WorkoutHistoryViewHolder(View itemView) {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView workoutIdView;
+        TextView songsView;
+
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            timeTextView = itemView.findViewById(R.id.textViewTime);
-            titleTextView = itemView.findViewById(R.id.textTitle);
-            artistTextView = itemView.findViewById(R.id.textArtist);
-            bpmTextView = itemView.findViewById(R.id.textBpm);
+            workoutIdView = itemView.findViewById(R.id.workout_id_view);
+            songsView = itemView.findViewById(R.id.songs_view);
         }
     }
 }
+
+

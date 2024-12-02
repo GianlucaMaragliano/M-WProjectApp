@@ -17,7 +17,9 @@ import com.example.heartbeat.R;
 import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.SoundManager;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -38,7 +40,7 @@ public class HistoryFragment extends  Fragment {
         workoutOfDayTextView = rootView.findViewById(R.id.textViewWorkoutOfDay);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String dateStr = dateFormat.format(new Date());  // Gets current date in the format "2024-12-02"
-        workoutOfDayTextView.setText("Workout of " + dateStr);
+        workoutOfDayTextView.setText("Workouts of " + dateStr);
 
         // Set up RecyclerView
         recyclerView = rootView.findViewById(R.id.recyclerViewWorkoutHistory);
@@ -61,7 +63,25 @@ public class HistoryFragment extends  Fragment {
         } else {
             Log.d("HistoryFragment", "Workout history loaded: " + workoutHistory.toString());
         }
-        adapter = new WorkoutHistoryAdapter(workoutHistory);
+
+        // Group by workoutId
+        Map<String, List<Map<String, String>>> groupedHistory = new HashMap<>();
+        for (Map<String, String> songData : workoutHistory) {
+            String workoutId = songData.get("id");
+            if (workoutId == null) {
+                Log.w("HistoryFragment", "Encountered entry with no workoutId: " + songData);
+                continue;
+            }
+            groupedHistory.computeIfAbsent(workoutId, k -> new ArrayList<>()).add(songData);
+        }
+
+        // Log grouped history for debugging
+        for (Map.Entry<String, List<Map<String, String>>> entry : groupedHistory.entrySet()) {
+            Log.d("HistoryFragment", "Workout ID: " + entry.getKey() + ", Songs: " + entry.getValue());
+        }
+
+
+        adapter = new WorkoutHistoryAdapter(groupedHistory);
         recyclerView.setAdapter(adapter);
     }
 }

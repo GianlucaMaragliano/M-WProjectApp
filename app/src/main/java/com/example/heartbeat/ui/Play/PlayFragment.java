@@ -66,7 +66,7 @@ public class PlayFragment extends Fragment {
         playButton.setOnClickListener(v -> {
 //            if (currentHeartRate > 0) {
 //                soundManager.playRandomSong((int)currentHeartRate);
-            soundManager.playRandomSong(targetBPM);
+            soundManager.playRandomSong(targetBPM, null);
 
                 // Update the UI with song details
                 songTitle.setText(soundManager.getCurrentSongTitle());

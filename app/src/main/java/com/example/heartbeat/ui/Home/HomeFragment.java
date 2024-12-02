@@ -1,5 +1,7 @@
 package com.example.heartbeat.ui.Home;
 
+import java.util.UUID;
+
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,8 +20,6 @@ import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.R;
 import com.example.heartbeat.SoundManager;
 import com.example.heartbeat.databinding.FragmentWorkoutBinding;
-import com.google.android.material.button.MaterialButtonToggleGroup;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 public class HomeFragment extends Fragment {
 
@@ -38,6 +38,7 @@ public class HomeFragment extends Fragment {
 
     private boolean workoutStarted = false;
     private int targetBpm;
+    private String currentWorkoutId; // Track current workout ID
 
     TextView songTitle;
     TextView songArtist;
@@ -73,10 +74,14 @@ public class HomeFragment extends Fragment {
         startButton.setOnClickListener(v-> {
             Log.d("Button", "Start button clicked");
             if (workoutStarted) return;
+
+            currentWorkoutId = UUID.randomUUID().toString();
+            Log.d("Workout", "Workout started with ID: " + currentWorkoutId);
+
             workoutStarted = true;
 
-            soundManager.playRandomWorkoutSong(targetBpm);
-//            soundManager.playRandomWorkoutSong(targetBpm, workoutId);
+//            soundManager.playRandomWorkoutSong(targetBpm);
+            soundManager.playRandomWorkoutSong(targetBpm, currentWorkoutId);
 
             // Update UI
             songArtist.setText(soundManager.getCurrentSongArtist());
@@ -170,7 +175,7 @@ public class HomeFragment extends Fragment {
             Log.d("MediaPlayer", "Song finished!");
             stopProgressUpdate();
 
-            soundManager.playRandomWorkoutSong(targetBpm);
+            soundManager.playRandomWorkoutSong(targetBpm, currentWorkoutId);
 
             songArtist.setText(soundManager.getCurrentSongArtist());
             songTitle.setText(soundManager.getCurrentSongTitle());
@@ -187,5 +192,6 @@ public class HomeFragment extends Fragment {
 
         stopProgressUpdate();
         soundManager.stopSound();
+        stopTimer();
     }
 }

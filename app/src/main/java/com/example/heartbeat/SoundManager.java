@@ -46,23 +46,39 @@ public class SoundManager {
         databaseHelper = new HeartBeatOpenHelper(context);
     }
 
-    public void playRandomWorkoutSong(int heartrate) {
-        playRandomSong(heartrate);
+    public void playRandomWorkoutSong(int heartrate, String workoutId) {
+        playRandomSong(heartrate, workoutId);
 
         String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String timeStr = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());  // Gets current time in the format "23:59:59"
 
         // Insert the song into the workout history
-        databaseHelper.insertWorkoutSong(timeStr, dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
+        databaseHelper.insertWorkoutSong(workoutId, timeStr, dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
     }
 
-    public void playRandomSong(int heartRate) {
+    public void playRandomSong(int heartRate, String workoutId) {
         // Query songs based on BPM range
         List<Map<String, String>> songs = databaseHelper.getSongsByBpmRange(heartRate, heartRate + 10);
         if (songs.isEmpty()) {
             Toast.makeText(context, "No songs found for current BPM range!", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        if (workoutId != null) {
+            List<Map<String, String>> workoutSongs = databaseHelper.getWorkoutSongsByWorkoutId(workoutId);
+            // Filter songs that are in the workout history
+            songs.removeIf(song -> {
+                for (Map<String, String> workoutSong : workoutSongs) {
+                    if (song.get("title").equals(workoutSong.get("title"))) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+        }
+
+        if (songs.isEmpty())
+            songs = databaseHelper.getSongsByBpmRange(heartRate, heartRate + 10);
 
         // Pick a random song
         Random random = new Random();
