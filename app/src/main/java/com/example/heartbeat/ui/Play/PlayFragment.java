@@ -63,10 +63,11 @@ public class PlayFragment extends Fragment {
 
             soundManager.setOnCompletionListener(mp -> {
                 playPauseButton.setText("Play"); // Reset Play button text
-                Toast.makeText(getContext(), "Song finished!", Toast.LENGTH_SHORT).show();
                 // Stop any progress tracking if added
                 stopProgressUpdate();
                 songProgress.setProgress(0);
+
+                Toast.makeText(getContext(), "Song finished! Average BPM: " + fakeHeartRate, Toast.LENGTH_SHORT).show();
             });
         });
 

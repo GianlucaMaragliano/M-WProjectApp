@@ -17,4 +17,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Heart-Beat"
 include(":app")
+include(":wear")
  
