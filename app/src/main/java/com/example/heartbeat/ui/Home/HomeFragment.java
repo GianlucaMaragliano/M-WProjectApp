@@ -32,11 +32,16 @@ public class HomeFragment extends Fragment {
     private Handler progressHandler;
     private Runnable progressRunnable;
 
+    private Handler timerHandler; // Handler for the timer
+    private Runnable timerRunnable; // Runnable for updating timer
+    private int timerSeconds = 0; // Timer counter in seconds
+
     private boolean workoutStarted = false;
     private int targetBpm;
 
     TextView songTitle;
     TextView songArtist;
+    TextView timerView;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentWorkoutBinding.inflate(inflater, container, false);
@@ -48,6 +53,9 @@ public class HomeFragment extends Fragment {
         hearRateView = (TextView) root.findViewById(R.id.counter);
         hearRateView.setText(fakeHeartRate + " BPM");
 
+        timerView = root.findViewById(R.id.timer_view); // Timer TextView
+        timerView.setText("00:00");
+
         // Initialize SoundManager
         soundManager = SoundManager.getInstance(getContext());
 
@@ -57,6 +65,7 @@ public class HomeFragment extends Fragment {
         songProgress = root.findViewById(R.id.progressBar);
 
         progressHandler = new Handler();
+        timerHandler = new Handler(); // Initialize timer handler
 
         Button startButton = root.findViewById(R.id.start_button);
         Button stopButton = root.findViewById(R.id.stop_button);
@@ -76,6 +85,7 @@ public class HomeFragment extends Fragment {
             songProgress.setProgress(0);
             startProgressUpdate();
 
+            startTimer(); // Start the timer
             updateSongOnFinish();
         });
 
@@ -86,13 +96,36 @@ public class HomeFragment extends Fragment {
 
             soundManager.stopSound();
             stopProgressUpdate();
-        });
 
+            stopTimer(); // Stop the timer
+        });
 
         HeartBeatOpenHelper databaseOpenHelper = new HeartBeatOpenHelper(this.getContext());
         SQLiteDatabase database = databaseOpenHelper.getWritableDatabase();
 
         return root;
+    }
+
+    private void startTimer() {
+        timerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                timerSeconds++;
+                int minutes = timerSeconds / 60;
+                int seconds = timerSeconds % 60;
+
+                timerView.setText(String.format("%02d:%02d", minutes, seconds));
+
+                timerHandler.postDelayed(this, 1000);
+            }
+        };
+        timerHandler.post(timerRunnable);
+    }
+
+    private void stopTimer() {
+        timerHandler.removeCallbacks(timerRunnable);
+        timerSeconds = 0;
+        timerView.setText("00:00");
     }
 
     // Method to convert heart rate to suggested BPM range
@@ -146,7 +179,6 @@ public class HomeFragment extends Fragment {
             updateSongOnFinish();
         });
     }
-
 
     @Override
     public void onDestroyView() {
