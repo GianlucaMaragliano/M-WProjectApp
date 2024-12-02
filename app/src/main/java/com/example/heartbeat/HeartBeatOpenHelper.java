@@ -244,6 +244,13 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    public void deleteWorkoutHistory() {
+        // clean the workout history table
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.delete(WORKOUT_HISTORY_TABLE_NAME, null, null);
+        database.close();
+    }
+
     public void deleteSong(int songId) {
         SQLiteDatabase database = this.getWritableDatabase();
         database.delete(SONGS_TABLE_NAME, SONG_KEY_ID + " = ?", new String[]{String.valueOf(songId)});

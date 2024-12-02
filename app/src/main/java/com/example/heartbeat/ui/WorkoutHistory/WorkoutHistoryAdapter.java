@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import java.util.Map;
 
-public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAdapter.ViewHolder> {
+public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAdapter.WorkoutHistoryViewHolder> {
 
     private List<Map<String, String>> workoutHistoryList;
 
@@ -19,13 +19,13 @@ public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAd
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public WorkoutHistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_workout_history, parent, false);
-        return new ViewHolder(view);
+        return new WorkoutHistoryViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(WorkoutHistoryViewHolder holder, int position) {
         Map<String, String> workout = workoutHistoryList.get(position);
 
         holder.dateTextView.setText(workout.get("date"));
@@ -39,13 +39,13 @@ public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAd
         return workoutHistoryList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class WorkoutHistoryViewHolder extends RecyclerView.ViewHolder {
         TextView dateTextView;
         TextView titleTextView;
         TextView artistTextView;
         TextView bpmTextView;
 
-        public ViewHolder(View itemView) {
+        public WorkoutHistoryViewHolder(View itemView) {
             super(itemView);
             dateTextView = itemView.findViewById(R.id.textViewDate);
             titleTextView = itemView.findViewById(R.id.textTitle);

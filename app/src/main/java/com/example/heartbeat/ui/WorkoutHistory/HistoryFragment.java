@@ -25,14 +25,20 @@ import java.text.SimpleDateFormat;
 
 public class HistoryFragment extends  Fragment {
     private HeartBeatOpenHelper databaseHelper;
-    private SoundManager soundManager;
     private RecyclerView recyclerView;
     private WorkoutHistoryAdapter adapter;
+    private TextView workoutOfDayTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
+
+        // Workout of current day
+        workoutOfDayTextView = rootView.findViewById(R.id.textViewWorkoutOfDay);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String dateStr = dateFormat.format(new Date());  // Gets current date in the format "2024-12-02"
+        workoutOfDayTextView.setText("Workout of " + dateStr);
 
         // Set up RecyclerView
         recyclerView = rootView.findViewById(R.id.recyclerViewWorkoutHistory);
