@@ -61,18 +61,18 @@ public class SoundManager {
         Log.d("RandomIndex", "Index: " + randomIndex);
         Map<String, String> randomSong = songs.get(randomIndex);
 
-        String audioPath = randomSong.get("audioPath");
+
         currentSongTitle = randomSong.get("title");
         currentSongArtist = randomSong.get("artist");
         currentSongBPM = Integer.parseInt(randomSong.get("bpm"));
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        String dateStr = dateFormat.format(new Date());  // Gets current date in the format "2024-12-02"
+        String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String timeStr = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());  // Gets current time in the format "23:59:59"
+
+
+        playSong("SoundLib/" + currentSongTitle + ".m4a");
 
         // Insert the song into the workout history
-        databaseHelper.insertWorkoutSong(dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
-
-        playSong("SoundLib/" + randomSong.get("title") + ".m4a");
-
+        databaseHelper.insertWorkoutSong(timeStr, dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
     }
 
     private void playSong(String file_name) {

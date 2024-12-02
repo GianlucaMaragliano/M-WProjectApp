@@ -19,7 +19,7 @@ import java.util.TreeMap;
 
 public class HeartBeatOpenHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "heartbeat";
     public static final String TABLE_NAME = "num_steps";
     public static final String KEY_ID = "id";
@@ -53,6 +53,7 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
     public static final String WORKOUT_HISTORY_TABLE_NAME = "history_workout";
     public static final String WORKOUT_KEY_ID = "id";
     public static final String WORKOUT_KEY_DATE = "date";
+    public static final String WorkOut_KEY_TIMESTAMP = "timestamp";
     public static final String WORKOUT_KEY_SONG_TITLE = "songTitle";
     public static final String WORKOUT_KEY_SONG_ARTIST = "songArtist";
     public static final String WORKOUT_KEY_SONG_BPM = "songBpm";
@@ -60,6 +61,7 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
     public static final String CREATE_WORKOUT_HISTORY_TABLE_SQL = "CREATE TABLE " + WORKOUT_HISTORY_TABLE_NAME + " ("
             + WORKOUT_KEY_ID + " INTEGER PRIMARY KEY, "
             + WORKOUT_KEY_DATE + " TEXT, "
+            + WorkOut_KEY_TIMESTAMP + " TEXT, "
             + WORKOUT_KEY_SONG_TITLE + " TEXT, "
             + WORKOUT_KEY_SONG_ARTIST + " TEXT, "
             + WORKOUT_KEY_SONG_BPM + " INTEGER);";
@@ -212,15 +214,16 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
     }
 
     // Method for inserting a song into workout history
-    public void insertWorkoutSong(String date, String songTitle, String songArtist, int songBpm) {
+    public void insertWorkoutSong(String timestamp, String date, String songTitle, String songArtist, int songBpm) {
         SQLiteDatabase database = this.getWritableDatabase();
 
         String insertQuery = "INSERT INTO " + WORKOUT_HISTORY_TABLE_NAME + " ("
                 + WORKOUT_KEY_DATE + ", "
+                + WorkOut_KEY_TIMESTAMP + ", "
                 + WORKOUT_KEY_SONG_TITLE + ", "
                 + WORKOUT_KEY_SONG_ARTIST + ", "
-                + WORKOUT_KEY_SONG_BPM + ") VALUES (?, ?, ?, ?)";
-        database.execSQL(insertQuery, new Object[]{date, songTitle, songArtist, songBpm});
+                + WORKOUT_KEY_SONG_BPM + ") VALUES (?, ?, ?, ?, ?)";
+        database.execSQL(insertQuery, new Object[]{date, timestamp, songTitle, songArtist, songBpm});
         database.close();
     }
 
@@ -233,7 +236,7 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Map<String, String> row = new HashMap<>();
-                row.put("date", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_DATE)));
+                row.put("timestamp", cursor.getString(cursor.getColumnIndexOrThrow(WorkOut_KEY_TIMESTAMP)));
                 row.put("title", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_TITLE)));
                 row.put("artist", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_ARTIST)));
                 row.put("bpm", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_BPM)));
