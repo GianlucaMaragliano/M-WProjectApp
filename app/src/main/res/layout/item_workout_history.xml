@@ -20,18 +20,25 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/textViewSongs"
+            android:id="@+id/textTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Songs"
-            android:textSize="14sp" />
+            android:text="Title"
+            android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/textViewDuration"
+            android:id="@+id/textArtist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Duration"
-            android:textSize="14sp" />
+            android:text="Artist"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textBpm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bpm"
+            android:textSize="16sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

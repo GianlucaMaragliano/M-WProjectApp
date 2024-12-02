@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.TreeMap;
 
 public class HeartBeatOpenHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "heartbeat";
     public static final String TABLE_NAME = "num_steps";
     public static final String KEY_ID = "id";
@@ -128,8 +130,6 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
 
     }
 
-
-
     public static Map<Integer, Integer> loadStepsByHour(Context context, String date){
         // 1. Define a map to store the hour and number of steps as key-value pairs
         Map<Integer, Integer>  map = new HashMap<>();
@@ -224,43 +224,24 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         database.close();
     }
 
-    // Method for retrieving all the songs from workout history based on the date
     public List<Map<String, String>> getWorkoutSongsByDate(String date) {
-        SQLiteDatabase database = null;
-        Cursor cursor = null;
-        List<Map<String, String>> songs = new LinkedList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM history_workout WHERE date = ?", new String[]{date});
+        Log.d("DBQuery", "Row count: " + cursor.getCount());
 
-        try {
-            database = this.getReadableDatabase();
-
-            // Define the query
-            String query = "SELECT * FROM " + WORKOUT_HISTORY_TABLE_NAME + " WHERE " + WORKOUT_KEY_DATE + " = ?";
-            cursor = database.rawQuery(query, new String[]{date});
-
-            // Iterate through the results
-            if (cursor.moveToFirst()) {
-                do {
-                    Map<String, String> song = new HashMap<>();
-                    song.put("date", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_DATE)));
-                    song.put("title", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_TITLE)));
-                    song.put("artist", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_ARTIST)));
-                    song.put("bpm", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_BPM)));
-                    songs.add(song);
-                } while (cursor.moveToNext());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            // Always close cursor and database to prevent memory leaks
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-            if (database != null && database.isOpen()) {
-                database.close();
-            }
+        List<Map<String, String>> result = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                Map<String, String> row = new HashMap<>();
+                row.put("date", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_DATE)));
+                row.put("title", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_TITLE)));
+                row.put("artist", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_ARTIST)));
+                row.put("bpm", cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_BPM)));
+                result.add(row);
+            } while (cursor.moveToNext());
         }
-
-        return songs;
+        cursor.close();
+        return result;
     }
 
     public void deleteSong(int songId) {
@@ -354,11 +335,8 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_SQL);
 
         sqLiteDatabase.execSQL(CREATE_SONGS_TABLE_SQL);
-        try {
-            sqLiteDatabase.execSQL(CREATE_WORKOUT_HISTORY_TABLE_SQL);
-        } catch ( Exception e) {
-            Log.e("Database Error", "Error creating table", e);
-        }
+
+        sqLiteDatabase.execSQL(CREATE_WORKOUT_HISTORY_TABLE_SQL);
 
     }
 

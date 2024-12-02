@@ -1,6 +1,7 @@
 package com.example.heartbeat.ui.WorkoutHistory;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.heartbeat.R;
 import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.SoundManager;
+
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.text.SimpleDateFormat;
 
 public class HistoryFragment extends  Fragment {
     private HeartBeatOpenHelper databaseHelper;
@@ -41,7 +46,15 @@ public class HistoryFragment extends  Fragment {
 
     private void loadWorkoutHistory() {
         HeartBeatOpenHelper dbHelper = new HeartBeatOpenHelper(getContext());
-        List<Map<String, String>> workoutHistory = dbHelper.getWorkoutSongsByDate("2024-12-01"); // Example date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String dateStr = dateFormat.format(new Date());  // Gets current date in the format "2024-12-02"
+
+        List<Map<String, String>> workoutHistory = dbHelper.getWorkoutSongsByDate(dateStr); // Example date
+        if (workoutHistory.isEmpty()) {
+            Log.e("HistoryFragment", "No workout history found for the given date.");
+        } else {
+            Log.d("HistoryFragment", "Workout history loaded: " + workoutHistory.toString());
+        }
         adapter = new WorkoutHistoryAdapter(workoutHistory);
         recyclerView.setAdapter(adapter);
     }

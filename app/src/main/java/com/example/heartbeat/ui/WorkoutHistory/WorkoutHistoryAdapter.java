@@ -29,8 +29,9 @@ public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAd
         Map<String, String> workout = workoutHistoryList.get(position);
 
         holder.dateTextView.setText(workout.get("date"));
-        holder.songsTextView.setText(workout.get("songs"));
-        holder.durationTextView.setText(workout.get("duration"));
+        holder.titleTextView.setText(workout.get("title"));
+        holder.artistTextView.setText(workout.get("artist"));
+        holder.bpmTextView.setText(workout.get("bpm"));
     }
 
     @Override
@@ -40,14 +41,16 @@ public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView dateTextView;
-        TextView songsTextView;
-        TextView durationTextView;
+        TextView titleTextView;
+        TextView artistTextView;
+        TextView bpmTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             dateTextView = itemView.findViewById(R.id.textViewDate);
-            songsTextView = itemView.findViewById(R.id.textViewSongs);
-            durationTextView = itemView.findViewById(R.id.textViewDuration);
+            titleTextView = itemView.findViewById(R.id.textTitle);
+            artistTextView = itemView.findViewById(R.id.textArtist);
+            bpmTextView = itemView.findViewById(R.id.textBpm);
         }
     }
 }

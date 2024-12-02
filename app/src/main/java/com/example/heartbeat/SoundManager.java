@@ -9,8 +9,10 @@ import android.widget.Toast;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.text.SimpleDateFormat;
 
 public class SoundManager {
 
@@ -61,8 +63,8 @@ public class SoundManager {
         currentSongTitle = randomSong.get("title");
         currentSongArtist = randomSong.get("artist");
         currentSongBPM = Integer.parseInt(randomSong.get("bpm"));
-        Date date = new Date();
-        String dateStr = date.toString();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String dateStr = dateFormat.format(new Date());  // Gets current date in the format "2024-12-02"
 
         // Insert the song into the workout history
         databaseHelper.insertWorkoutSong(dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
