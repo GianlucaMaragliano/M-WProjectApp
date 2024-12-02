@@ -20,8 +20,11 @@ import androidx.fragment.app.Fragment;
 
 import com.example.heartbeat.R;
 import com.example.heartbeat.SoundManager;
+import com.example.heartbeat.databinding.FragmentPlayBinding;
 
 public class PlayFragment extends Fragment {
+
+    private FragmentPlayBinding binding;
 
     private SoundManager soundManager;
     private ProgressBar songProgress;
@@ -33,13 +36,14 @@ public class PlayFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_play, container, false);
+        binding = FragmentPlayBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
         int fakeHeartRate = 120; // BPM = 120
 
         int targetBPM = calculateTargetBPM(fakeHeartRate);
         TextView heartRateText = root.findViewById(R.id.heart_rate_text);
-        heartRateText.setText("Heart Rate: " + fakeHeartRate + " BPM | Target BPM: " + targetBPM);
+//        heartRateText.setText("Heart Rate: " + fakeHeartRate + " BPM | Target BPM: " + targetBPM);
 
         // Initialize heart rate text view
         heartRateText = root.findViewById(R.id.heart_rate_text);
@@ -157,7 +161,7 @@ public class PlayFragment extends Fragment {
     }
 
     // Method to convert heart rate to suggested BPM range
-    private int calculateTargetBPM(int heartRate) {
+    public int calculateTargetBPM(int heartRate) {
         // Example conversion: Use a linear relationship for now
         if (heartRate < 100) return (int) (heartRate * 1.5);
         if (heartRate < 140) return (int) (heartRate * 1.2);

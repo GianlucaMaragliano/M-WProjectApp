@@ -46,6 +46,15 @@ public class SoundManager {
         databaseHelper = new HeartBeatOpenHelper(context);
     }
 
+    public void playRandomWorkoutSong(int heartrate) {
+        playRandomSong(heartrate);
+
+        String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String timeStr = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());  // Gets current time in the format "23:59:59"
+
+        // Insert the song into the workout history
+        databaseHelper.insertWorkoutSong(timeStr, dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
+    }
 
     public void playRandomSong(int heartRate) {
         // Query songs based on BPM range
@@ -65,14 +74,9 @@ public class SoundManager {
         currentSongTitle = randomSong.get("title");
         currentSongArtist = randomSong.get("artist");
         currentSongBPM = Integer.parseInt(randomSong.get("bpm"));
-        String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        String timeStr = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());  // Gets current time in the format "23:59:59"
 
 
         playSong("SoundLib/" + currentSongTitle + ".m4a");
-
-        // Insert the song into the workout history
-        databaseHelper.insertWorkoutSong(timeStr, dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
     }
 
     private void playSong(String file_name) {

@@ -8,14 +8,6 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/footsteps_silhouette_variant_svgrepo_com"
             android:title="@string/menu_steps" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/baseline_stacked_bar_chart_24"
-            android:title="@string/menu_report" />
-        <item
-            android:id="@+id/nav_daily"
-            android:icon="@drawable/baseline_stacked_bar_chart_24"
-            android:title="@string/menu_day" />
 
         <item
             android:id="@+id/nav_play"
@@ -29,7 +21,7 @@
 
         <item
             android:id="@+id/nav_history"
-            android:icon="@drawable/music_1005_svgrepo_com"
+            android:icon="@drawable/baseline_stacked_bar_chart_24"
             android:title="@string/menu_history" />
     </group>
 </menu>
