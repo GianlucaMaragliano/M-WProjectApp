@@ -16,7 +16,7 @@ import java.util.TreeMap;
 
 public class HeartBeatOpenHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "heartbeat";
     public static final String TABLE_NAME = "num_steps";
     public static final String KEY_ID = "id";
