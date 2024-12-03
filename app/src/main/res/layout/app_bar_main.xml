@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FEFBEA"
     tools:context="com.example.heartbeat.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -14,8 +15,8 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:layout_height="match_parent"
+            android:background="@color/dark_md_theme_inversePrimary"
             app:popupTheme="@style/Theme.StepAppV5.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
