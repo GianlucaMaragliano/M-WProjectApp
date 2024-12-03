@@ -131,6 +131,7 @@ public class HomeFragment extends Fragment {
         timerHandler.removeCallbacks(timerRunnable);
         timerSeconds = 0;
         timerView.setText("00:00");
+        cleanFields();
     }
 
     // Method to convert heart rate to suggested BPM range
@@ -185,11 +186,18 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void cleanFields() {
+        songArtist.setText("");
+        songTitle.setText("");
+        songProgress.setProgress(0);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
 
+        cleanFields();
         stopProgressUpdate();
         soundManager.stopSound();
         stopTimer();

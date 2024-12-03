@@ -18,9 +18,10 @@
         app:indicatorSize="360dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.19"
+        app:layout_constraintVertical_bias="0.242"
         app:trackColor="?attr/colorTertiaryContainer"
         app:trackThickness="35dp" />
 
@@ -74,6 +75,31 @@
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/start_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar">
+
+        <Button
+            android:id="@+id/play_pause_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="?attr/colorSecondaryContainer"
+            android:text="Play"
+            android:textColor="?attr/colorOnSecondaryContainer"
+            android:textSize="15sp"
+            />
+
+
+
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/start_button"
         style="?attr/materialButtonOutlinedStyle"
@@ -91,7 +117,7 @@
         app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar"
-        app:layout_constraintVertical_bias="0.65" />
+        app:layout_constraintVertical_bias="0.75" />
 
     <Button
         android:id="@+id/stop_button"
@@ -110,7 +136,7 @@
         app:layout_constraintHorizontal_bias="0.8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar"
-        app:layout_constraintVertical_bias="0.65" />
+        app:layout_constraintVertical_bias="0.75" />
 
     <TextView
         android:id="@+id/timer_view"
@@ -118,10 +144,10 @@
         android:layout_height="wrap_content"
         android:text="Timer"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/start_button"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
