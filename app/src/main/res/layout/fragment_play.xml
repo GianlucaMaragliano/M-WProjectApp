@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"
         android:text="Fake Heart Rate: -- BPM"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/play_button"
+        app:layout_constraintBottom_toTopOf="@+id/song_progress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.126" />
+        app:layout_constraintVertical_bias="0.216" />
 
     <TextView
         android:id="@+id/song_title"
@@ -53,20 +53,20 @@
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/song_progress"
-        android:layout_width="346dp"
-        android:layout_height="348dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="false"
         app:indicatorColor="?attr/colorOnTertiaryContainer"
-        app:indicatorSize="304dp"
-        app:layout_constraintBottom_toBottomOf="@+id/song_artist"
+        app:indicatorSize="360dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/song_bpm"
-        app:layout_constraintVertical_bias="0.479"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.24000001"
         app:trackColor="?attr/colorTertiaryContainer"
-        app:trackThickness="42dp" />
+        app:trackThickness="35dp" />
 
     <Button
         android:id="@+id/play_pause_button"
@@ -90,7 +90,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.884" />
+        app:layout_constraintTop_toBottomOf="@+id/song_progress"
+        app:layout_constraintVertical_bias="0.709" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
