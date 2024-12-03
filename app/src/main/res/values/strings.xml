@@ -12,6 +12,7 @@
     <string name="menu_add_song">Add Song</string>
     <string name="menu_play_song">Play Song</string>
     <string name="menu_day">Daily Report</string>
+    <string name="menu_history">History</string>
 
     <string name="num_steps">0</string>
     <string name="goal">Goal: 50</string>

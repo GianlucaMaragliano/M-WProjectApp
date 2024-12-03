@@ -8,6 +8,7 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/baseline_person_pin_24"
             android:title="@string/menu_steps" />
+
         <item
             android:id="@+id/nav_play"
             android:icon="@drawable/baseline_play_circle_filled_24"
@@ -17,5 +18,10 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/music_1005_svgrepo_com"
             android:title="@string/menu_add_song" />
+
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/baseline_stacked_bar_chart_24"
+            android:title="@string/menu_history" />
     </group>
 </menu>
