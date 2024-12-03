@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.heartbeat.ui.Home.HomeFragment"
-        android:label="@string/menu_steps"
+        android:label="@string/menu_workout"
         tools:layout="@layout/fragment_workout" />
 
     <fragment
