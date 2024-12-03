@@ -44,6 +44,9 @@ public class HomeFragment extends Fragment {
     TextView songArtist;
     TextView timerView;
 
+    Button playPauseButton;
+    Button nextSongButton;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentWorkoutBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -70,39 +73,37 @@ public class HomeFragment extends Fragment {
 
         Button startButton = root.findViewById(R.id.start_button);
         Button stopButton = root.findViewById(R.id.stop_button);
+        playPauseButton = root.findViewById(R.id.play_pause_button);
+        nextSongButton = root.findViewById(R.id.next_button);
 
         startButton.setOnClickListener(v-> {
             Log.d("Button", "Start button clicked");
             if (workoutStarted) return;
-
-            currentWorkoutId = UUID.randomUUID().toString();
-            Log.d("Workout", "Workout started with ID: " + currentWorkoutId);
-
-            workoutStarted = true;
-
-//            soundManager.playRandomWorkoutSong(targetBpm);
-            soundManager.playRandomWorkoutSong(targetBpm, currentWorkoutId);
-
-            // Update UI
-            songArtist.setText(soundManager.getCurrentSongArtist());
-            songTitle.setText(soundManager.getCurrentSongTitle());
-
-            songProgress.setProgress(0);
-            startProgressUpdate();
-
-            startTimer(); // Start the timer
-            updateSongOnFinish();
+            startWorkout();
         });
 
         stopButton.setOnClickListener(nv -> {
             Log.d("Button", "Stop button clicked");
             if (!workoutStarted) return;
-            workoutStarted = false;
+            stopWorkout();
+        });
 
-            soundManager.stopSound();
-            stopProgressUpdate();
+        playPauseButton.setOnClickListener(v -> {
+            soundManager.togglePlayPause();
+            if (soundManager.isPlaying()) {
+                playPauseButton.setText("Pause");
+                startProgressUpdate();
+            } else {
+                playPauseButton.setText("Play");
+                stopProgressUpdate();
+            }
+        });
 
-            stopTimer(); // Stop the timer
+        nextSongButton.setOnClickListener(v -> {
+            soundManager.playRandomWorkoutSong(targetBpm, currentWorkoutId);
+            songArtist.setText(soundManager.getCurrentSongArtist());
+            songTitle.setText(soundManager.getCurrentSongTitle());
+            startProgressUpdate();
         });
 
         HeartBeatOpenHelper databaseOpenHelper = new HeartBeatOpenHelper(this.getContext());
@@ -166,7 +167,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void stopProgressUpdate() {
-        songProgress.setProgress(0);
         progressHandler.removeCallbacks(progressRunnable);
     }
 
@@ -187,10 +187,75 @@ public class HomeFragment extends Fragment {
     }
 
     private void cleanFields() {
-        songArtist.setText("");
-        songTitle.setText("");
+        crossfadeView(null, playPauseButton, null);
+        crossfadeView(null, nextSongButton, null);
+
+        crossfadeView(null, songArtist, ()-> songArtist.setText(""));
+        crossfadeView(null, songTitle, ()-> songTitle.setText(""));
+
         songProgress.setProgress(0);
     }
+
+    private void startWorkout() {
+
+        currentWorkoutId = UUID.randomUUID().toString();
+        Log.d("Workout", "Workout started with ID: " + currentWorkoutId);
+
+        crossfadeView(playPauseButton, null, null);
+        crossfadeView(nextSongButton, null, null);
+
+        workoutStarted = true;
+        soundManager.playRandomWorkoutSong(targetBpm, currentWorkoutId);
+
+        // Update UI
+        songArtist.setText(soundManager.getCurrentSongArtist());
+        songTitle.setText(soundManager.getCurrentSongTitle());
+
+        crossfadeView(songArtist, null, null);
+        crossfadeView(songTitle, null, null);
+
+        songProgress.setProgress(0);
+        startProgressUpdate();
+
+        startTimer(); // Start the timer
+        updateSongOnFinish();
+    }
+
+    private void stopWorkout() {
+        workoutStarted = false;
+        soundManager.stopSound();
+        cleanFields();
+        stopProgressUpdate();
+        stopTimer();
+    }
+
+    private void crossfadeView(View viewToShow, View viewToHide, Runnable onHideComplete) {
+        // Fade out the view to hide
+        if (viewToHide != null && viewToHide.getVisibility() == View.VISIBLE) {
+            viewToHide.animate()
+                    .alpha(0f)
+                    .setDuration(300)
+                    .withEndAction(() -> {
+                        viewToHide.setVisibility(View.INVISIBLE);
+                        if (onHideComplete != null) {
+                            onHideComplete.run();
+                        }
+                    })
+                    .start();
+        }
+
+        // Fade in the view to show
+        if (viewToShow != null && viewToShow.getVisibility() != View.VISIBLE) {
+            viewToShow.setAlpha(0f);
+            viewToShow.setVisibility(View.VISIBLE);
+            viewToShow.animate()
+                    .alpha(1f)
+                    .setDuration(300)
+                    .start();
+        }
+    }
+
+
 
     @Override
     public void onDestroyView() {
