@@ -34,7 +34,7 @@
             android:id="@+id/nav_header_title"
             android:layout_width="220dp"
             android:layout_height="50dp"
-            android:text="Heart-Beat"
+            android:text="Heart/Beat"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textColorHighlight="#FFFFFF"

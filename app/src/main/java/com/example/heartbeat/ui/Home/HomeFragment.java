@@ -2,6 +2,7 @@ package com.example.heartbeat.ui.Home;
 
 import java.util.UUID;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,12 +15,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.R;
 import com.example.heartbeat.SoundManager;
 import com.example.heartbeat.databinding.FragmentWorkoutBinding;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class HomeFragment extends Fragment {
 
@@ -44,8 +48,9 @@ public class HomeFragment extends Fragment {
     TextView songArtist;
     TextView timerView;
 
-    Button playPauseButton;
-    Button nextSongButton;
+    FloatingActionButton playPauseButton;
+    FloatingActionButton nextSongButton;
+    MaterialButton startButton;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentWorkoutBinding.inflate(inflater, container, false);
@@ -71,30 +76,26 @@ public class HomeFragment extends Fragment {
         progressHandler = new Handler();
         timerHandler = new Handler(); // Initialize timer handler
 
-        Button startButton = root.findViewById(R.id.start_button);
-        Button stopButton = root.findViewById(R.id.stop_button);
+        startButton = root.findViewById(R.id.start_button);
         playPauseButton = root.findViewById(R.id.play_pause_button);
         nextSongButton = root.findViewById(R.id.next_button);
 
         startButton.setOnClickListener(v-> {
             Log.d("Button", "Start button clicked");
-            if (workoutStarted) return;
-            startWorkout();
-        });
-
-        stopButton.setOnClickListener(nv -> {
-            Log.d("Button", "Stop button clicked");
-            if (!workoutStarted) return;
-            stopWorkout();
+            handleWorkout();
         });
 
         playPauseButton.setOnClickListener(v -> {
             soundManager.togglePlayPause();
             if (soundManager.isPlaying()) {
-                playPauseButton.setText("Pause");
+                playPauseButton.setImageDrawable(
+                        ContextCompat.getDrawable(
+                                requireContext(), R.drawable.media_player_ui_button_pause_svgrepo_com));
                 startProgressUpdate();
             } else {
-                playPauseButton.setText("Play");
+                playPauseButton.setImageDrawable(
+                        ContextCompat.getDrawable(
+                                requireContext(), R.drawable.media_player_ui_button_play_svgrepo_com));
                 stopProgressUpdate();
             }
         });
@@ -219,6 +220,20 @@ public class HomeFragment extends Fragment {
 
         startTimer(); // Start the timer
         updateSongOnFinish();
+    }
+
+    private void handleWorkout() {
+        if (workoutStarted) {
+            startButton.setText(R.string.start_text);
+            int icon = R.drawable.baseline_play_circle_filled_24;
+            startButton.setIconResource(icon);
+            stopWorkout();
+        } else {
+            startButton.setText(R.string.stop_text);
+            int icon = R.drawable.baseline_stop_circle_24;
+            startButton.setIconResource(icon);
+            startWorkout();
+        }
     }
 
     private void stopWorkout() {
