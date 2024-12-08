@@ -17,13 +17,13 @@ public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAd
     private final Map<String, List<Map<String, String>>> groupedHistory;
     private final OnWorkoutClickListener listener;
 
-    public interface OnWorkoutClickListener {
-        void onWorkoutClick(String workoutId);
-    }
-
     public WorkoutHistoryAdapter(Map<String, List<Map<String, String>>> groupedHistory, OnWorkoutClickListener listener) {
         this.groupedHistory = groupedHistory;
         this.listener = listener;
+    }
+
+    public interface OnWorkoutClickListener {
+        void onWorkoutClick(String workoutId);
     }
 
     @NonNull
@@ -36,13 +36,22 @@ public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        List<String> workoutIds = new ArrayList<>(groupedHistory.keySet());
-        String workoutId = workoutIds.get(position);
+//        List<String> workoutIds = new ArrayList<>(groupedHistory.keySet());
+//        String workoutId = workoutIds.get(position);
+//        List<Map<String, String>> songs = groupedHistory.get(workoutId);
+//
+//        holder.workoutIdView.setText("Workout ID: " + workoutId);
+//        holder.songsView.setText(formatSongs(songs));
+//        holder.itemView.setOnClickListener(v -> listener.onWorkoutClick(workoutId));
+        String workoutId = new ArrayList<>(groupedHistory.keySet()).get(position);
         List<Map<String, String>> songs = groupedHistory.get(workoutId);
-
         holder.workoutIdView.setText("Workout ID: " + workoutId);
         holder.songsView.setText(formatSongs(songs));
-        holder.itemView.setOnClickListener(v -> listener.onWorkoutClick(workoutId));
+        holder.itemView.setOnClickListener(v -> {
+           if (listener != null) {
+               listener.onWorkoutClick(workoutId);
+           }
+        });
     }
 
     @Override
