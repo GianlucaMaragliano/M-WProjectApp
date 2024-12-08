@@ -28,4 +28,15 @@
         android:name="com.example.heartbeat.ui.WorkoutHistory.HistoryFragment"
         android:label="@string/menu_history"
         tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/workoutDetailsFragment"
+        android:name="com.example.heartbeat.ui.WorkoutHistory.WorkoutDetailsFragment"
+        android:label="Workout Details"
+        tools:layout="@layout/fragment_workout_details">
+        <argument
+            android:name="workoutId"
+            app:argType="string" />
+    </fragment>
+
 </navigation>

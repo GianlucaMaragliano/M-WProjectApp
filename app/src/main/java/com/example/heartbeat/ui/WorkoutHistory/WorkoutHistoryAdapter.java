@@ -15,9 +15,15 @@ import java.util.Map;
 
 public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAdapter.ViewHolder> {
     private final Map<String, List<Map<String, String>>> groupedHistory;
+    private final OnWorkoutClickListener listener;
 
-    public WorkoutHistoryAdapter(Map<String, List<Map<String, String>>> groupedHistory) {
+    public interface OnWorkoutClickListener {
+        void onWorkoutClick(String workoutId);
+    }
+
+    public WorkoutHistoryAdapter(Map<String, List<Map<String, String>>> groupedHistory, OnWorkoutClickListener listener) {
         this.groupedHistory = groupedHistory;
+        this.listener = listener;
     }
 
     @NonNull
@@ -30,14 +36,13 @@ public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // Convert groupedHistory keys to a list to access by position
         List<String> workoutIds = new ArrayList<>(groupedHistory.keySet());
         String workoutId = workoutIds.get(position);
         List<Map<String, String>> songs = groupedHistory.get(workoutId);
 
-        // Bind workout ID and songs to the ViewHolder
-        holder.workoutIdView.setText("Workout #" + (position + 1));
+        holder.workoutIdView.setText("Workout ID: " + workoutId);
         holder.songsView.setText(formatSongs(songs));
+        holder.itemView.setOnClickListener(v -> listener.onWorkoutClick(workoutId));
     }
 
     @Override
