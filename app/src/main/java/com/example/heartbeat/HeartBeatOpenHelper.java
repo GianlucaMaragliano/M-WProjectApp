@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class HeartBeatOpenHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "heartbeat";
 
     public static final String SONGS_TABLE_NAME = "songs";
@@ -53,6 +53,24 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
             + WORKOUT_KEY_SONG_TITLE + " TEXT, "
             + WORKOUT_KEY_SONG_ARTIST + " TEXT, "
             + WORKOUT_KEY_SONG_BPM + " INTEGER);";
+
+    public static final String WORKOUT_EXERCISES_TABLE_NAME = "workout_exercises";
+    public static final String EXERCISE_KEY_ID = "id";
+    public static final String EXERCISE_KEY_WORKOUT_ID = "workoutId";
+    public static final String EXERCISE_KEY_SONG_ID = "songId";
+    public static final String EXERCISE_KEY_EXERCISE_NAME = "exerciseName";
+    public static final String EXERCISE_KEY_SET_COUNT = "setCount";
+    public static final String EXERCISE_KEY_REP_COUNT = "repCount";
+
+    public static final String CREATE_WORKOUT_EXERCISES_TABLE_SQL = "CREATE TABLE " + WORKOUT_EXERCISES_TABLE_NAME + " ("
+            + EXERCISE_KEY_ID + " INTEGER PRIMARY KEY, "
+            + EXERCISE_KEY_WORKOUT_ID + " TEXT, "
+            + EXERCISE_KEY_SONG_ID + " INTEGER, "
+            + EXERCISE_KEY_EXERCISE_NAME + " TEXT, "
+            + EXERCISE_KEY_SET_COUNT + " INTEGER, "
+            + EXERCISE_KEY_REP_COUNT + " INTEGER, "
+            + "FOREIGN KEY (" + EXERCISE_KEY_SONG_ID + ") REFERENCES " + SONGS_TABLE_NAME + "(" + SONG_KEY_ID + "));";
+
 
 
     public HeartBeatOpenHelper(Context context)
@@ -219,6 +237,40 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         return songs;
     }
 
+    public void insertWorkoutExercise(String workoutId, int songId, String exerciseName, int setCount, int repCount) {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        String insertQuery = "INSERT INTO " + WORKOUT_EXERCISES_TABLE_NAME + " ("
+                + EXERCISE_KEY_WORKOUT_ID + ", "
+                + EXERCISE_KEY_SONG_ID + ", "
+                + EXERCISE_KEY_EXERCISE_NAME + ", "
+                + EXERCISE_KEY_SET_COUNT + ", "
+                + EXERCISE_KEY_REP_COUNT + ") VALUES (?, ?, ?, ?, ?)";
+        database.execSQL(insertQuery, new Object[]{workoutId, songId, exerciseName, setCount, repCount});
+        database.close();
+    }
+
+    public List<Map<String, String>> getExercisesByWorkoutId(String workoutId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + WORKOUT_EXERCISES_TABLE_NAME + " WHERE " + EXERCISE_KEY_WORKOUT_ID + " = ?", new String[]{workoutId});
+
+        List<Map<String, String>> result = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                Map<String, String> row = new HashMap<>();
+                row.put("songId", cursor.getString(cursor.getColumnIndexOrThrow(EXERCISE_KEY_SONG_ID)));
+                row.put("exerciseName", cursor.getString(cursor.getColumnIndexOrThrow(EXERCISE_KEY_EXERCISE_NAME)));
+                row.put("setCount", cursor.getString(cursor.getColumnIndexOrThrow(EXERCISE_KEY_SET_COUNT)));
+                row.put("repCount", cursor.getString(cursor.getColumnIndexOrThrow(EXERCISE_KEY_REP_COUNT)));
+                result.add(row);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return result;
+    }
+
+
+
 
 //    #############################################################################################################
 
@@ -230,6 +282,7 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(CREATE_WORKOUT_HISTORY_TABLE_SQL);
 
+        sqLiteDatabase.execSQL(CREATE_WORKOUT_EXERCISES_TABLE_SQL);
     }
 
     @Override
@@ -237,6 +290,7 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         if (oldVersion != newVersion) {
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SONGS_TABLE_NAME);
             sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WORKOUT_HISTORY_TABLE_NAME);
+            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WORKOUT_EXERCISES_TABLE_NAME);
             onCreate(sqLiteDatabase);
         }
     }
