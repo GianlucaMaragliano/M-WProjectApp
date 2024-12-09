@@ -1,5 +1,6 @@
 package com.example.heartbeat;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -237,17 +238,22 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         return songs;
     }
 
-    public void insertWorkoutExercise(String workoutId, int songId, String exerciseName, int setCount, int repCount) {
+    public void insertWorkoutExercise(String workoutId, String songId, String exerciseName, int setCount, int repCount) {
         SQLiteDatabase database = this.getWritableDatabase();
 
-        String insertQuery = "INSERT INTO " + WORKOUT_EXERCISES_TABLE_NAME + " ("
-                + EXERCISE_KEY_WORKOUT_ID + ", "
-                + EXERCISE_KEY_SONG_ID + ", "
-                + EXERCISE_KEY_EXERCISE_NAME + ", "
-                + EXERCISE_KEY_SET_COUNT + ", "
-                + EXERCISE_KEY_REP_COUNT + ") VALUES (?, ?, ?, ?, ?)";
-        database.execSQL(insertQuery, new Object[]{workoutId, songId, exerciseName, setCount, repCount});
-        database.close();
+        ContentValues values = new ContentValues();
+        values.put(EXERCISE_KEY_WORKOUT_ID, workoutId);
+        values.put(EXERCISE_KEY_SONG_ID, songId);
+        values.put(EXERCISE_KEY_EXERCISE_NAME, exerciseName);
+        values.put(EXERCISE_KEY_SET_COUNT, setCount);
+        values.put(EXERCISE_KEY_REP_COUNT, repCount);
+
+        long result = database.insert(WORKOUT_EXERCISES_TABLE_NAME, null, values);
+        if (result == -1) {
+            Log.e("HeartBeatOpenHelper", "Failed to insert exercise");
+        } else {
+            Log.d("HeartBeatOpenHelper", "Exercise inserted successfully with ID: " + result);
+        }
     }
 
     public List<Map<String, String>> getExercisesByWorkoutId(String workoutId) {

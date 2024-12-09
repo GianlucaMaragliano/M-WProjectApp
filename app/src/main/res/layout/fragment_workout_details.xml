@@ -5,59 +5,94 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.WorkoutHistory.WorkoutDetailsFragment">
-
-    <!-- Workout Details TextView -->
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <!-- Wrap all content inside ScrollView to make the page scrollable -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/textViewWorkoutDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Workout Details"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingBottom="8dp" />
-
-        <!-- Text above the chart -->
-        <TextView
-            android:id="@+id/chartTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Graph Title"
-            android:textSize="18sp"
-            android:textColor="#000000"
-            android:gravity="center"
-            android:layout_margin="16dp" />
-
-        <!-- LineChart for displaying the graph -->
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/lineChart"
+        android:fillViewport="true">
+        <!-- Workout Details TextView -->
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <TextView
-            android:id="@+id/songDetailsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Song details will be displayed here"
-            android:layout_marginTop="16dp"
-            android:textSize="16sp" />
+            <TextView
+                android:id="@+id/textViewWorkoutDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Workout Details"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp" />
 
-        <!-- Button to create workout exercises -->
-        <Button
-            android:id="@+id/createWorkoutExercisesButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create Workout Exercises"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:onClick="onCreateWorkoutExercisesClicked" />
-    </LinearLayout>
+            <!-- Text above the chart -->
+            <TextView
+                android:id="@+id/chartTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Graph Title"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:layout_margin="16dp" />
+
+            <!-- LineChart for displaying the graph -->
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/songDetailsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Song details will be displayed here"
+                android:layout_marginTop="16dp"
+                android:textSize="16sp" />
+
+            <!-- Exercise Name Input -->
+            <EditText
+                android:id="@+id/exerciseNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Exercise Name"
+                android:inputType="text" />
+
+            <!-- Set Count Input -->
+            <EditText
+                android:id="@+id/setCountInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Set Count"
+                android:inputType="number" />
+
+            <!-- Rep Count Input -->
+            <EditText
+                android:id="@+id/repCountInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Rep Count"
+                android:inputType="number" />
+
+            <!-- Spinner for selecting a song -->
+            <Spinner
+                android:id="@+id/songSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- Button to save the exercise -->
+            <Button
+                android:id="@+id/saveExerciseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save Exercise"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:onClick="onSaveExerciseClicked" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

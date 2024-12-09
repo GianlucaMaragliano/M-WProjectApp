@@ -1,17 +1,27 @@
 package com.example.heartbeat.ui.WorkoutHistory;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.github.mikephil.charting.charts.LineChart;
@@ -34,10 +44,11 @@ import java.util.Map;
 
 public class WorkoutDetailsFragment extends Fragment {
     private String workoutId;
-    private TextView workoutDetailsTextView;
-    private RecyclerView recyclerView;
-    private SongsAdapter adapter;
     private LineChart lineChart;
+    private WorkoutHistoryAdapter adapter;
+    private Spinner songSpinner;
+    private EditText exerciseNameInput, setCountInput, repCountInput;
+    private Button saveExerciseButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +57,13 @@ public class WorkoutDetailsFragment extends Fragment {
 
         // Initialize LineChart
         lineChart = rootView.findViewById(R.id.lineChart);
+
+        // Initialize inputs for exercise creation
+        exerciseNameInput = rootView.findViewById(R.id.exerciseNameInput);
+        setCountInput = rootView.findViewById(R.id.setCountInput);
+        repCountInput = rootView.findViewById(R.id.repCountInput);
+        songSpinner = rootView.findViewById(R.id.songSpinner);
+        saveExerciseButton = rootView.findViewById(R.id.saveExerciseButton);
 
         // Get the workoutId passed from HistoryFragment
         if (getArguments() != null) {
@@ -58,26 +76,40 @@ public class WorkoutDetailsFragment extends Fragment {
             Log.e("WorkoutDetailsFragment", "No workoutId found in arguments");
         }
 
-        // Initialize the button for creating workout exercises
-        Button createWorkoutExercisesButton = rootView.findViewById(R.id.createWorkoutExercisesButton);
-        createWorkoutExercisesButton.setOnClickListener(new View.OnClickListener() {
+        saveExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onCreateWorkoutExercisesClicked();
+                onSaveExerciseClicked();
             }
         });
 
         return rootView;
     }
 
-    // This method will be triggered when the button is clicked
-    public void onCreateWorkoutExercisesClicked() {
-        // Navigate to the exercise creation screen
-        // You can either use a new Activity or a Fragment for creating exercises
-        Intent intent = new Intent(getContext(), CreateExerciseActivity.class);
-        intent.putExtra("workoutId", workoutId);  // Pass workoutId to the new activity/fragment
-        startActivity(intent);
+    // This method will be triggered when the save button is clicked
+    public void onSaveExerciseClicked() {
+        String exerciseName = exerciseNameInput.getText().toString();
+        String setCountString = setCountInput.getText().toString();
+        String repCountString = repCountInput.getText().toString();
+        Map<String, String> selectedSong = (Map<String, String>) songSpinner.getSelectedItem();
+
+        if (exerciseName.isEmpty() || setCountString.isEmpty() || repCountString.isEmpty() || selectedSong == null) {
+            Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int setCount = Integer.parseInt(setCountString);
+        int repCount = Integer.parseInt(repCountString);
+        String songId = selectedSong.get("id");
+
+        // Insert exercise into database
+        HeartBeatOpenHelper dbHelper = new HeartBeatOpenHelper(getContext());
+        dbHelper.insertWorkoutExercise(workoutId, songId, exerciseName, setCount, repCount);
+
+        // Optionally, show a confirmation message
+        Toast.makeText(getContext(), "Exercise saved", Toast.LENGTH_SHORT).show();
     }
+
 
     private void loadSongsForWorkout(String workoutId) {
         HeartBeatOpenHelper dbHelper = new HeartBeatOpenHelper(getContext());
@@ -95,6 +127,22 @@ public class WorkoutDetailsFragment extends Fragment {
         for (Map<String, String> song : songsList) {
             Log.d("SongsAdapter", "Song: " + song.toString());
         }
+
+        // Populate Spinner with song titles
+        ArrayAdapter<Map<String, String>> adapter = new ArrayAdapter<Map<String, String>>(getContext(), android.R.layout.simple_spinner_item, songsList) {
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView text = (TextView) view.findViewById(android.R.id.text1);
+                Map<String, String> song = getItem(position);
+                String songDisplay = song.get("title") + " - " + song.get("artist");  // Customize the text display format
+                text.setText(songDisplay);
+                return view;
+            }
+        };
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        songSpinner.setAdapter(adapter);
 
         // Prepare data for LineChart
         setupLineChart(lineChart, songsList);
