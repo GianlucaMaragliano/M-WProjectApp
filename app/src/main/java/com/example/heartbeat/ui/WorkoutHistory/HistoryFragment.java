@@ -58,31 +58,11 @@ public class HistoryFragment extends  Fragment {
         calendarButton = rootView.findViewById(R.id.calendar_button);
         calendarButton.setOnClickListener(v -> showDatePicker());
 
-        // Set the text view to be clickable
-//        workoutOfDayTextView.setOnClickListener(v -> showDatePicker());
         // Load workout history data
         loadWorkoutHistory();
 
         return rootView;
     }
-
-//    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//
-//        // Find NavController
-//        NavController navController = Navigation.findNavController(view);
-//
-//        // Set up click listener for navigation
-//        TextView workoutTextView = view.findViewById(R.id.textViewWorkoutOfDay);
-//        workoutTextView.setOnClickListener(v -> {
-//            // Navigate to WorkoutDetailsFragment with a workoutId argument
-//            Bundle args = new Bundle();
-//            args.putString("workoutId", "your_workout_id_here"); // Replace with actual workoutId
-//            navController.navigate(R.id.workoutDetailsFragment, args);
-//        });
-//    }
-
 
     private void showDatePicker() {
         final Calendar calendar = Calendar.getInstance();
@@ -132,17 +112,6 @@ public class HistoryFragment extends  Fragment {
             Log.d("HistoryFragment", "Workout ID: " + entry.getKey() + ", Songs: " + entry.getValue());
         }
 
-
-        // Set up the adapter
-//        adapter = new WorkoutHistoryAdapter(groupedHistory, workoutId -> {
-//            // Handle workout item click
-//            Log.d("HistoryFragment", "Workout item clicked: " + workoutId);
-//            // Pass the workoutId to WorkoutDetailsFragment via navigation
-//            Bundle args = new Bundle();
-//            args.putString("workoutId", workoutId);
-//            NavController navController = Navigation.findNavController(getView());
-//            navController.navigate(R.id.workoutDetailsFragment, args);
-//        });
         adapter = new WorkoutHistoryAdapter(groupedHistory, workoutId -> {
             // Handle workout item click here for inspection
             Log.d("HistoryFragment", "Workout item clicked: " + workoutId);
@@ -152,6 +121,5 @@ public class HistoryFragment extends  Fragment {
             navController.navigate(R.id.workoutDetailsFragment, args);
         });
         recyclerView.setAdapter(adapter);
-//        recyclerView.setAdapter(adapter);
     }
 }
