@@ -19,11 +19,6 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.time.Instant;
-
 
 public class HeartRateSensorActivity extends Activity implements SensorEventListener {
     private static final int REQUEST_BODY_SENSORS = 1;
