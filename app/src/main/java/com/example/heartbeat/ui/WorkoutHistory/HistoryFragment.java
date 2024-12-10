@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,8 @@ public class HistoryFragment extends  Fragment {
     private Date selectedDate;
     private Map<String, List<Map<String, String>>> groupedHistory;
 
+    private ImageButton calendarButton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,8 +55,11 @@ public class HistoryFragment extends  Fragment {
 
         selectedDate = new Date();
 
+        calendarButton = rootView.findViewById(R.id.calendar_button);
+        calendarButton.setOnClickListener(v -> showDatePicker());
+
         // Set the text view to be clickable
-        workoutOfDayTextView.setOnClickListener(v -> showDatePicker());
+//        workoutOfDayTextView.setOnClickListener(v -> showDatePicker());
         // Load workout history data
         loadWorkoutHistory();
 

@@ -45,7 +45,7 @@ public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAd
 //        holder.itemView.setOnClickListener(v -> listener.onWorkoutClick(workoutId));
         String workoutId = new ArrayList<>(groupedHistory.keySet()).get(position);
         List<Map<String, String>> songs = groupedHistory.get(workoutId);
-        holder.workoutIdView.setText("Workout ID: " + workoutId);
+        holder.workoutIdView.setText("Workout #" + (position+1));
         holder.songsView.setText(formatSongs(songs));
         holder.itemView.setOnClickListener(v -> {
            if (listener != null) {
