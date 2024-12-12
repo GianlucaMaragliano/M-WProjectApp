@@ -90,8 +90,8 @@ public class WorkoutDetailsFragment extends Fragment {
         }
 
         int totalBPM = 0;
-        int peakBPM = Integer.MIN_VALUE;
-        int lowestBPM = Integer.MAX_VALUE;
+        double peakBPM = Double.MIN_VALUE;
+        double lowestBPM = Double.MAX_VALUE;
         int highIntensityThreshold = 140;
         int highIntensityDuration = 0;
         String peakSong = "";
@@ -100,7 +100,7 @@ public class WorkoutDetailsFragment extends Fragment {
 
         for (int i = 0; i < songDataList.size(); i++) {
             Map<String, String> song = songDataList.get(i);
-            int bpm = Integer.parseInt(song.get("bpm"));
+            double bpm = Double.parseDouble(song.get("bpm"));
             totalBPM += bpm;
 
             if (bpm > peakBPM) {

@@ -94,9 +94,8 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
     }
 
     // Method for inserting a song into workout history
-    public void insertWorkoutSong(String workoutId, String timestamp, String date, String songTitle, String songArtist, int songBpm) {
+    public void insertWorkoutSong(String workoutId, String timestamp, String date, String songTitle, String songArtist, double avgBpm) {
         SQLiteDatabase database = this.getWritableDatabase();
-
 
         String insertQuery = "INSERT INTO " + WORKOUT_HISTORY_TABLE_NAME + " ("
                 + WORKOUT_KEY_ID + ", "
@@ -105,7 +104,7 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
                 + WORKOUT_KEY_SONG_TITLE + ", "
                 + WORKOUT_KEY_SONG_ARTIST + ", "
                 + WORKOUT_KEY_SONG_BPM + ") VALUES (?, ?, ?, ?, ?, ?)";
-        database.execSQL(insertQuery, new Object[]{workoutId, date, timestamp, songTitle, songArtist, songBpm});
+        database.execSQL(insertQuery, new Object[]{workoutId, date, timestamp, songTitle, songArtist, avgBpm});
         database.close();
     }
 

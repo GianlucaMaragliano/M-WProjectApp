@@ -49,11 +49,18 @@ public class SoundManager {
     public void playRandomWorkoutSong(int heartrate, String workoutId) {
         playRandomSong(heartrate, workoutId);
 
+//        String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//        String timeStr = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());  // Gets current time in the format "23:59:59"
+
+        // Insert the song into the workout history
+//        databaseHelper.insertWorkoutSong(workoutId, timeStr, dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
+    }
+
+    public void saveWorkoutSong(String workoutId, double avgBpm) {
         String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String timeStr = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());  // Gets current time in the format "23:59:59"
 
-        // Insert the song into the workout history
-        databaseHelper.insertWorkoutSong(workoutId, timeStr, dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
+        databaseHelper.insertWorkoutSong(workoutId, timeStr, dateStr, currentSongTitle, currentSongArtist, avgBpm);
     }
 
     public void playRandomSong(int heartRate, String workoutId) {

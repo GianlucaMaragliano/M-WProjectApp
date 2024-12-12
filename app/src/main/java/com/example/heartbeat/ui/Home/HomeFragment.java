@@ -18,19 +18,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.heartbeat.HeartBeatOpenHelper;
+import com.example.heartbeat.HeartRateGenerator;
 import com.example.heartbeat.R;
 import com.example.heartbeat.SoundManager;
 import com.example.heartbeat.databinding.FragmentWorkoutBinding;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.wearable.CapabilityClient;
-import com.google.android.gms.wearable.DataClient;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.DataMapItem;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.Wearable;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -38,7 +29,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentWorkoutBinding binding;
 
-    private TextView hearRateView;
+    TextView hearRateView;
 
     private SoundManager soundManager;
     private ProgressBar songProgress;
@@ -51,6 +42,8 @@ public class HomeFragment extends Fragment {
 
     private boolean workoutStarted = false;
     private int targetBpm;
+    private double averageBpm = 0;
+    private int heartRate = 0;
     private String currentWorkoutId; // Track current workout ID
 
     TextView songTitle;
@@ -61,31 +54,21 @@ public class HomeFragment extends Fragment {
     FloatingActionButton nextSongButton;
     MaterialButton startButton;
 
-    private DataClient dataClient;
-    private HeartRateListener heartRateListener;
+    HeartRateGenerator heartRateGenerator;
+    HeartRateListener heartRateListener;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentWorkoutBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        Task<List<Node>> connectedNodes = Wearable.getNodeClient(requireContext()).getConnectedNodes();
-        connectedNodes.addOnSuccessListener(nodes -> {
-            for (Node node : nodes) {
-                if (node.isNearby()) {
-                    Log.d("Wearable", "Connected to wearable node: " + node.getId());
-                } else {
-                    Log.d("Wearable", "No wearable connected.");
-                }
-            }
-        });
-
-        // Bind heart rate data
-        heartRateListener = new HeartRateListener(this);
-        dataClient = Wearable.getDataClient(requireContext());
-        dataClient.addListener(heartRateListener);
-
         int fakeHeartRate = 120; // BPM = 120
+        heartRate = fakeHeartRate;
         targetBpm = calculateTargetBPM(fakeHeartRate);
+
+        // Initialize the heart rate generator
+        heartRateGenerator = new HeartRateGenerator(fakeHeartRate);
+        heartRateListener = new HeartRateListener(this);
+        heartRateGenerator.addListener(heartRateListener);
 
         hearRateView = (TextView) root.findViewById(R.id.counter);
         hearRateView.setText(fakeHeartRate + " BPM");
@@ -129,6 +112,7 @@ public class HomeFragment extends Fragment {
         });
 
         nextSongButton.setOnClickListener(v -> {
+            soundManager.saveWorkoutSong(currentWorkoutId, averageBpm);
             soundManager.playRandomWorkoutSong(targetBpm, currentWorkoutId);
             songArtist.setText(soundManager.getCurrentSongArtist());
             songTitle.setText(soundManager.getCurrentSongTitle());
@@ -202,9 +186,11 @@ public class HomeFragment extends Fragment {
     private void updateSongOnFinish() {
         // Set the completion listener
         soundManager.setOnCompletionListener(mp -> {
+            soundManager.saveWorkoutSong(currentWorkoutId, averageBpm);
             Log.d("MediaPlayer", "Song finished!");
             stopProgressUpdate();
 
+            targetBpm = calculateTargetBPM(heartRate);
             soundManager.playRandomWorkoutSong(targetBpm, currentWorkoutId);
 
             songArtist.setText(soundManager.getCurrentSongArtist());
@@ -226,14 +212,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void startWorkout() {
+        if (workoutStarted) return;
+        workoutStarted = true;
+
+        heartRateGenerator.startGenerating();
 
         currentWorkoutId = UUID.randomUUID().toString();
         Log.d("Workout", "Workout started with ID: " + currentWorkoutId);
 
-        crossfadeView(playPauseButton, null, null);
-        crossfadeView(nextSongButton, null, null);
-
-        workoutStarted = true;
         soundManager.playRandomWorkoutSong(targetBpm, currentWorkoutId);
 
         // Update UI
@@ -242,6 +228,8 @@ public class HomeFragment extends Fragment {
 
         crossfadeView(songArtist, null, null);
         crossfadeView(songTitle, null, null);
+        crossfadeView(playPauseButton, null, null);
+        crossfadeView(nextSongButton, null, null);
 
         songProgress.setProgress(0);
         startProgressUpdate();
@@ -265,8 +253,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void stopWorkout() {
+        if (!workoutStarted) return;
         workoutStarted = false;
+        soundManager.saveWorkoutSong(currentWorkoutId, averageBpm);
+
         soundManager.stopSound();
+
+        heartRateGenerator.stopGenerating();
+
         cleanFields();
         stopProgressUpdate();
         stopTimer();
@@ -287,22 +281,32 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
 
-        dataClient.removeListener(heartRateListener);
+        stopWorkout();
+    }
 
-        cleanFields();
-        stopProgressUpdate();
-        soundManager.stopSound();
-        stopTimer();
+    public double getAverageBpm() {
+        return averageBpm;
+    }
+
+    public void setAverageBpm(double averageBpm) {
+        this.averageBpm = averageBpm;
+    }
+
+    public int getHeartRate() {
+        return heartRate;
+    }
+
+    public void setHeartRate(int heartRate) {
+        this.heartRate = heartRate;
     }
 }
 
-class HeartRateListener implements DataClient.OnDataChangedListener {
+class HeartRateListener implements HeartRateGenerator.HeartRateListener{
 
     private HomeFragment homeFragment;
 
@@ -311,30 +315,14 @@ class HeartRateListener implements DataClient.OnDataChangedListener {
     }
 
     @Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
-        if (Log.isLoggable("TUZIA", Log.DEBUG)) {
-            Log.d("TUZIA", "onDataChanged: " + dataEvents);
-        }
-        // Handle the data change event
-        Log.d("HeartRateListener", "Data changed event received");
-
-//        for (DataEvent event : dataEventBuffer) {
-//            if (event.getType() == DataEvent.TYPE_CHANGED) {
-//                DataItem item = event.getDataItem();
-//                if (item.getUri().getPath().equals("/heart_rate_path")) {
-//                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-//                    float heartRate = dataMap.getFloat("heart_rate_key");
-//                    Log.d("HeartRateListener", "Heart rate received: " + heartRate);
-//
-//                }
-//            }
-//        }
-        Log.d("HeartRateListener", "onDataChanged triggered");
-        for (DataEvent event : dataEvents) {
-            if (event.getType() == DataEvent.TYPE_CHANGED) {
-                DataItem item = event.getDataItem();
-                Log.d("HeartRateListener", "Path: " + item.getUri().getPath());
-            }
-        }
+    public void onHeartRateChanged(float heartRate) {
+        // Handle the heart rate data
+        Log.d("MainActivity", "Received heart rate: " + heartRate);
+        double averageBpm = homeFragment.getAverageBpm();
+        int bpm = ((int) heartRate);
+        averageBpm = (averageBpm + bpm) / 2.0;
+        homeFragment.setAverageBpm(averageBpm);
+        homeFragment.hearRateView.setText(bpm + " BPM");
+        homeFragment.setHeartRate(bpm);
     }
 }
