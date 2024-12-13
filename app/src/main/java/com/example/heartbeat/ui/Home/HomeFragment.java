@@ -1,10 +1,5 @@
 package com.example.heartbeat.ui.Home;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -23,13 +18,17 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.HeartRateGenerator;
 import com.example.heartbeat.R;
 import com.example.heartbeat.SoundManager;
 import com.example.heartbeat.databinding.FragmentWorkoutBinding;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class HomeFragment extends Fragment {
 

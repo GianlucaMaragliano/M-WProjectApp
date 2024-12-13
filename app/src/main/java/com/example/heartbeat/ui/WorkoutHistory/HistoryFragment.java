@@ -6,22 +6,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.heartbeat.R;
 import com.example.heartbeat.HeartBeatOpenHelper;
-import com.example.heartbeat.SoundManager;
+import com.example.heartbeat.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,10 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.text.SimpleDateFormat;
 
 public class HistoryFragment extends  Fragment {
-    private HeartBeatOpenHelper databaseHelper;
     private RecyclerView recyclerView;
     private WorkoutHistoryAdapter adapter;
     private TextView workoutOfDayTextView;

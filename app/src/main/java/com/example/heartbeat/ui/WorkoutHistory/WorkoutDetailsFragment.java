@@ -1,29 +1,17 @@
 package com.example.heartbeat.ui.WorkoutHistory;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.heartbeat.HeartBeatOpenHelper;
+import com.example.heartbeat.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -32,10 +20,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-
-
-import com.example.heartbeat.HeartBeatOpenHelper;
-import com.example.heartbeat.R;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
@@ -257,24 +241,16 @@ public class WorkoutDetailsFragment extends Fragment {
         legend.setTextColor(getResources().getColor(R.color.dark_md_theme_background_highContrast));
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
 
-
         // Refresh the chart
         lineChart.invalidate();
     }
 
     private void showSongDetails(Map<String, String> song) {
-//        String title = song.get("title");
-//        String artist = song.get("artist");
-//        String timestamp = song.get("timestamp");
-//        String bpm = song.get("bpm");
-//
-//        // Display the song details in a TextView or a Dialog
-//        // Example: Display in a TextView
-//        String songDetails = "Title: " + title + "\nArtist: " + artist + "\nTimestamp: " + timestamp + "\nBPM: " + bpm;
-//        TextView songDetailsTextView = getView().findViewById(R.id.songDetailsTextView);  // Make sure this TextView exists in your layout
-//        songDetailsTextView.setText(songDetails);
-        String title = song.get("title");
-        String artist = song.get("artist");
+        // Get song details from the db
+        Map<String, String> songDetails = dbHelper.getSongById(song.get("songId"));
+
+        String title = songDetails.get("title");
+        String artist = songDetails.get("artist");
         String timestamp = song.get("timestamp");
         String bpm = song.get("avgHeartRate");
 
