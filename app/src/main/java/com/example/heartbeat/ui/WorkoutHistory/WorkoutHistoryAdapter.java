@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.R;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,8 @@ import java.util.Map;
 public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAdapter.ViewHolder> {
     private final Map<String, List<Map<String, String>>> groupedHistory;
     private final OnWorkoutClickListener listener;
+
+    private HeartBeatOpenHelper databaseHelper;
 
     public WorkoutHistoryAdapter(Map<String, List<Map<String, String>>> groupedHistory, OnWorkoutClickListener listener) {
         this.groupedHistory = groupedHistory;
@@ -31,20 +35,15 @@ public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAd
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_workout_history, parent, false);
+        databaseHelper = new HeartBeatOpenHelper(parent.getContext());
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//        List<String> workoutIds = new ArrayList<>(groupedHistory.keySet());
-//        String workoutId = workoutIds.get(position);
-//        List<Map<String, String>> songs = groupedHistory.get(workoutId);
-//
-//        holder.workoutIdView.setText("Workout ID: " + workoutId);
-//        holder.songsView.setText(formatSongs(songs));
-//        holder.itemView.setOnClickListener(v -> listener.onWorkoutClick(workoutId));
         String workoutId = new ArrayList<>(groupedHistory.keySet()).get(position);
         List<Map<String, String>> songs = groupedHistory.get(workoutId);
+
         holder.workoutIdView.setText("Workout #" + (position+1));
         holder.songsView.setText(formatSongs(songs));
         holder.itemView.setOnClickListener(v -> {
@@ -62,12 +61,14 @@ public class WorkoutHistoryAdapter extends RecyclerView.Adapter<WorkoutHistoryAd
     private String formatSongs(List<Map<String, String>> songs) {
         StringBuilder formatted = new StringBuilder();
         for (Map<String, String> song : songs) {
+//            Get Song from database
+            Map<String, String> songDetails = databaseHelper.getSongById(song.get("songId"));
             formatted.append(
                     song.get("timestamp"))
                     .append(" - ")
-                    .append(song.get("title"))
+                    .append(songDetails.get("title"))
                     .append(" by ")
-                    .append(song.get("artist"))
+                    .append(songDetails.get("artist"))
                     .append("\n");
         }
         return formatted.toString();
