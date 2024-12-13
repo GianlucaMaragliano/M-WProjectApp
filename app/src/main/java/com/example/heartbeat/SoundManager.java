@@ -24,6 +24,7 @@ public class SoundManager {
     private MediaPlayer.OnCompletionListener onCompletionListener;
 
     // To track the current song details
+    private String currentSongId;
     private String currentSongTitle;
     private String currentSongArtist;
     private int currentSongBPM;
@@ -54,7 +55,7 @@ public class SoundManager {
 
         Log.d("WorkoutSong", "Saving workout song: " + currentSongTitle + " - " + currentSongArtist + " - " + avgBpm + " - " + runDistance);
 
-        databaseHelper.insertWorkoutSong(workoutId, timeStr, dateStr, currentSongTitle, currentSongArtist, avgBpm);
+        databaseHelper.insertWorkoutSong(workoutId, timeStr, dateStr, currentSongId, avgBpm, runDistance);
     }
 
     public void playRandomSong(int heartRate, String workoutId) {
@@ -87,11 +88,10 @@ public class SoundManager {
         Log.d("RandomIndex", "Index: " + randomIndex);
         Map<String, String> randomSong = songs.get(randomIndex);
 
-
+        currentSongId = randomSong.get("id");
         currentSongTitle = randomSong.get("title");
         currentSongArtist = randomSong.get("artist");
         currentSongBPM = Integer.parseInt(randomSong.get("bpm"));
-
 
         playSong("SoundLib/" + currentSongTitle + ".m4a");
     }
@@ -147,6 +147,10 @@ public class SoundManager {
             mediaPlayer.release();
             mediaPlayer = null;
         }
+    }
+
+    public String getCurrentSongId() {
+        return currentSongId;
     }
 
     public String getCurrentSongTitle() {

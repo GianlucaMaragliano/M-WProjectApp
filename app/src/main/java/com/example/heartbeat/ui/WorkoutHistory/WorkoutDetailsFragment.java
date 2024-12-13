@@ -100,7 +100,7 @@ public class WorkoutDetailsFragment extends Fragment {
 
         for (int i = 0; i < songDataList.size(); i++) {
             Map<String, String> song = songDataList.get(i);
-            double bpm = Double.parseDouble(song.get("bpm"));
+            double bpm = Double.parseDouble(song.get("avgHeartRate"));
             totalBPM += bpm;
 
             if (bpm > peakBPM) {
@@ -136,7 +136,7 @@ public class WorkoutDetailsFragment extends Fragment {
 
         // Build insights text
         StringBuilder insights = new StringBuilder();
-        insights.append("Average BPM: ").append(String.format("%.2f", averageBPM)).append("\n");
+        insights.append("Average Heart Rate: ").append(String.format("%.2f", averageBPM)).append("\n");
         insights.append("Peak BPM: ").append(peakBPM).append(" (").append(peakSong).append(")\n");
         insights.append("Lowest BPM: ").append(lowestBPM).append(" (").append(lowestSong).append(")\n");
         insights.append("Most Played Song: ").append(mostPlayedSong).append(" (").append(maxPlays).append(" times)\n");
@@ -176,7 +176,7 @@ public class WorkoutDetailsFragment extends Fragment {
         for (int i = 0; i < songsList.size(); i++) {
             Map<String, String> song = songsList.get(i);
             String timestamp = song.get("timestamp");
-            String bpmString = song.get("bpm");
+            String bpmString = song.get("avgHeartRate");
 
             try {
                 float bpm = Float.parseFloat(bpmString);
@@ -276,12 +276,12 @@ public class WorkoutDetailsFragment extends Fragment {
         String title = song.get("title");
         String artist = song.get("artist");
         String timestamp = song.get("timestamp");
-        String bpm = song.get("bpm");
+        String bpm = song.get("avgHeartRate");
 
         // Create an alert dialog to show song details
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Song Details")
-                .setMessage("Title: " + title + "\nArtist: " + artist + "\nTimestamp: " + timestamp + "\nBPM: " + bpm)
+                .setMessage("Title: " + title + "\nArtist: " + artist + "\nTimestamp: " + timestamp + "\n Average Heart Rate: " + bpm)
                 .setPositiveButton("OK", null)
                 .show();
     }
