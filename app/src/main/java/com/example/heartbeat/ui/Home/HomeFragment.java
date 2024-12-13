@@ -1,9 +1,15 @@
 package com.example.heartbeat.ui.Home;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -56,6 +62,12 @@ public class HomeFragment extends Fragment {
 
     HeartRateGenerator heartRateGenerator;
     HeartRateListener heartRateListener;
+
+    private StepCounterListener sensorListener;
+    private SensorManager sensorManager;
+    private Sensor accSensor;
+
+    double totalDistance = 0; // Total distance in meters
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentWorkoutBinding.inflate(inflater, container, false);
@@ -112,16 +124,20 @@ public class HomeFragment extends Fragment {
         });
 
         nextSongButton.setOnClickListener(v -> {
-            soundManager.saveWorkoutSong(currentWorkoutId, averageBpm);
+            soundManager.saveWorkoutSong(currentWorkoutId, averageBpm, totalDistance);
+            totalDistance = 0; // Reset total distance
+            sensorListener.setTotalDistance(0); // Reset total distance in sensor listener
             soundManager.playRandomWorkoutSong(targetBpm, currentWorkoutId);
             songArtist.setText(soundManager.getCurrentSongArtist());
             songTitle.setText(soundManager.getCurrentSongTitle());
             startProgressUpdate();
         });
 
-        HeartBeatOpenHelper databaseOpenHelper = new HeartBeatOpenHelper(this.getContext());
-        SQLiteDatabase database = databaseOpenHelper.getWritableDatabase();
+        // Initialize the step counter sensor
+        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 
+        sensorListener = new StepCounterListener(this);
         return root;
     }
 
@@ -186,7 +202,10 @@ public class HomeFragment extends Fragment {
     private void updateSongOnFinish() {
         // Set the completion listener
         soundManager.setOnCompletionListener(mp -> {
-            soundManager.saveWorkoutSong(currentWorkoutId, averageBpm);
+            soundManager.saveWorkoutSong(currentWorkoutId, averageBpm, totalDistance);
+            totalDistance = 0; // Reset total distance
+            sensorListener.setTotalDistance(0); // Reset total distance in sensor listener
+
             Log.d("MediaPlayer", "Song finished!");
             stopProgressUpdate();
 
@@ -215,7 +234,13 @@ public class HomeFragment extends Fragment {
         if (workoutStarted) return;
         workoutStarted = true;
 
+        // Start the heart rate generator
         heartRateGenerator.startGenerating();
+
+        // Start the step counter sensor
+        sensorManager.registerListener(sensorListener, accSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        totalDistance = 0; // Reset total distance
+        sensorListener.setTotalDistance(0); // Reset total distance in sensor listener
 
         currentWorkoutId = UUID.randomUUID().toString();
         Log.d("Workout", "Workout started with ID: " + currentWorkoutId);
@@ -255,11 +280,15 @@ public class HomeFragment extends Fragment {
     private void stopWorkout() {
         if (!workoutStarted) return;
         workoutStarted = false;
-        soundManager.saveWorkoutSong(currentWorkoutId, averageBpm);
+        soundManager.saveWorkoutSong(currentWorkoutId, averageBpm, totalDistance);
+        totalDistance = 0; // Reset total distance
+        sensorListener.setTotalDistance(0); // Reset total distance in sensor listener
 
         soundManager.stopSound();
 
         heartRateGenerator.stopGenerating();
+
+        sensorManager.unregisterListener(sensorListener);
 
         cleanFields();
         stopProgressUpdate();
@@ -304,6 +333,10 @@ public class HomeFragment extends Fragment {
     public void setHeartRate(int heartRate) {
         this.heartRate = heartRate;
     }
+
+    public void setTotalDistance(double totalDistance) {
+        this.totalDistance = totalDistance;
+    }
 }
 
 class HeartRateListener implements HeartRateGenerator.HeartRateListener{
@@ -324,5 +357,82 @@ class HeartRateListener implements HeartRateGenerator.HeartRateListener{
         homeFragment.setAverageBpm(averageBpm);
         homeFragment.hearRateView.setText(bpm + " BPM");
         homeFragment.setHeartRate(bpm);
+    }
+}
+
+class StepCounterListener implements SensorEventListener {
+
+    private long lastSensorUpdate = 0;
+    private final ArrayList<Integer> accSeries = new ArrayList<>();
+    private final ArrayList<String> timestampsSeries = new ArrayList<>();
+    private double accMag = 0;
+    private int lastAddedIndex = 1;
+    private final int stepThreshold = 6;
+
+    private String timestamp;
+
+    private final HomeFragment homeFragment;
+
+    private double totalDistance = 0; // Total distance in meters
+    private final double STEP_LENGTH = 1.07; // Average step length in meters
+
+    public StepCounterListener(HomeFragment homeFragment) {
+        this.homeFragment = homeFragment;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+            float x = sensorEvent.values[0];
+            float y = sensorEvent.values[1];
+            float z = sensorEvent.values[2];
+            long currentTimeInMilliSecond = System.currentTimeMillis();
+            if ((currentTimeInMilliSecond - lastSensorUpdate) > 1000) {
+                lastSensorUpdate = currentTimeInMilliSecond;
+                String sensorRawValues = "x = " + x + ", y = " + y + ", z = " + z;
+                Log.d("Acc. Event", "Last sensor update at " + currentTimeInMilliSecond + " " + sensorRawValues);
+            }
+            accMag = Math.sqrt(x * x + y * y + z * z);
+            accSeries.add((int) accMag);
+            // Get timestamp
+            timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS")
+                    .format(currentTimeInMilliSecond);
+            timestampsSeries.add(timestamp);
+            peakDetection(); // Call peak detection logic
+        }
+    }
+
+    private void peakDetection() {
+        int windowSize = 20;
+
+        // Ensure enough data for processing
+        int currentSize = accSeries.size();
+        if (currentSize - lastAddedIndex < windowSize) {
+            return;
+        }
+        // Get the data window
+        List<Integer> valuesInWindow = accSeries.subList(lastAddedIndex, currentSize);
+        List<String> timePointList = timestampsSeries.subList(lastAddedIndex, currentSize);
+        lastAddedIndex = currentSize;
+        for (int i = 1; i < valuesInWindow.size() - 1; i++) {
+            int forwardSlope = valuesInWindow.get(i + 1) - valuesInWindow.get(i);
+            int downwardSlope = valuesInWindow.get(i) - valuesInWindow.get(i - 1);
+            if (forwardSlope < 0 && downwardSlope > 0 && valuesInWindow.get(i) > stepThreshold) {
+                // Update total distance
+                homeFragment.setTotalDistance(totalDistance += STEP_LENGTH);
+                // Log and update UI
+                Log.d("ACC STEPS", "Distance: " + totalDistance + " meters");
+//                homeFragment.updateRunDistance(totalDistance); // Notify fragment to update distance
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        Log.d("Sensor", "Accuracy changed");
+    }
+
+    public void setTotalDistance(double totalDistance) {
+        this.totalDistance = totalDistance;
     }
 }

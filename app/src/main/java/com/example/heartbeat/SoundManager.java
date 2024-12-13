@@ -28,7 +28,6 @@ public class SoundManager {
     private String currentSongArtist;
     private int currentSongBPM;
 
-
     public static SoundManager getInstance(Context context) {
         // Use the application context, which will ensure that you
         // don't accidentally leak an Activity's context.
@@ -39,7 +38,6 @@ public class SoundManager {
         return soundManagerInstance;
     }
 
-
     // Constructor
     private SoundManager(Context context) {
         this.context = context;
@@ -48,17 +46,13 @@ public class SoundManager {
 
     public void playRandomWorkoutSong(int heartrate, String workoutId) {
         playRandomSong(heartrate, workoutId);
-
-//        String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-//        String timeStr = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());  // Gets current time in the format "23:59:59"
-
-        // Insert the song into the workout history
-//        databaseHelper.insertWorkoutSong(workoutId, timeStr, dateStr, currentSongTitle, currentSongArtist, currentSongBPM);
     }
 
-    public void saveWorkoutSong(String workoutId, double avgBpm) {
+    public void saveWorkoutSong(String workoutId, double avgBpm, double runDistance) {
         String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String timeStr = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());  // Gets current time in the format "23:59:59"
+
+        Log.d("WorkoutSong", "Saving workout song: " + currentSongTitle + " - " + currentSongArtist + " - " + avgBpm + " - " + runDistance);
 
         databaseHelper.insertWorkoutSong(workoutId, timeStr, dateStr, currentSongTitle, currentSongArtist, avgBpm);
     }
