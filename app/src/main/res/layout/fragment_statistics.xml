@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/statisticsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Overall Statistics"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="40dp" />
+
+    <TextView
+        android:id="@+id/totalSteps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Steps: 0"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/weeklySteps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weekly Steps: 0"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/averageHeartRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Average Heart Rate: 0 bpm"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/averageWorkoutTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Average Workout Time: 0 min"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/mostStepsDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Most Steps in a Day: 0"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/workoutTimeWeek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Workout Time This Week: 0 min"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/mostPlayedSong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Most Played Song: None"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/mostSkippedSong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Most Skipped Song: None"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/overallMusicPlayed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Overall Music Played: 0 songs"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/overallWorkoutTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Overall Workout Time: 0 min"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp" />
+
+</LinearLayout>
