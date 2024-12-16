@@ -42,8 +42,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:scrollbars="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/textViewWorkoutOfDay"
-        app:layout_constraintBottom_toTopOf="@id/fragment_container" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewWorkoutOfDay" />
 
     <!-- Add a fragment container for dynamic fragments -->
     <FrameLayout
