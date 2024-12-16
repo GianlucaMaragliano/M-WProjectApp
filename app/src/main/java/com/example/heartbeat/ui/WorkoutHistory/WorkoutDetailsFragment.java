@@ -80,21 +80,23 @@ public class WorkoutDetailsFragment extends Fragment {
         int highIntensityDuration = 0;
         String peakSong = "";
         String lowestSong = "";
+        double totalDistance = 0;
         Map<String, Integer> songPlayCount = new HashMap<>(); // Track song frequencies
 
         for (int i = 0; i < songDataList.size(); i++) {
             Map<String, String> song = songDataList.get(i);
+            Map<String, String> songDetails = dbHelper.getSongById(song.get("songId"));
             double bpm = Double.parseDouble(song.get("avgHeartRate"));
             totalBPM += bpm;
 
             if (bpm > peakBPM) {
                 peakBPM = bpm;
-                peakSong = song.get("title");
+                peakSong = songDetails.get("title");
             }
 
             if (bpm < lowestBPM) {
                 lowestBPM = bpm;
-                lowestSong = song.get("title");
+                lowestSong = songDetails.get("title");
             }
 
             if (bpm > highIntensityThreshold) {
@@ -102,8 +104,12 @@ public class WorkoutDetailsFragment extends Fragment {
             }
 
             // Track play count for each song
-            String title = song.get("title");
+            String title = songDetails.get("title");
             songPlayCount.put(title, songPlayCount.getOrDefault(title, 0) + 1);
+
+            // Calculate total distance
+            double distance = Double.parseDouble(song.get("distance"));
+            totalDistance += distance;
         }
 
         float averageBPM = (float) totalBPM / songDataList.size();
@@ -125,6 +131,7 @@ public class WorkoutDetailsFragment extends Fragment {
         insights.append("Lowest BPM: ").append(lowestBPM).append(" (").append(lowestSong).append(")\n");
         insights.append("Most Played Song: ").append(mostPlayedSong).append(" (").append(maxPlays).append(" times)\n");
         insights.append("Duration of High Intensity (> ").append(highIntensityThreshold).append(" BPM): ").append(highIntensityDuration).append(" songs\n");
+        insights.append("Total Distance: ").append(totalDistance).append(" m");
         insightsTextView.setText(insights.toString());
     }
 
@@ -176,7 +183,7 @@ public class WorkoutDetailsFragment extends Fragment {
             }
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "BPM over Time");
+        LineDataSet dataSet = new LineDataSet(entries, "AVG Heart rate over Time");
         dataSet.setColor(getResources().getColor(R.color.dark_md_theme_inversePrimary_highContrast)); // Set line color
         dataSet.setValueTextColor(getResources().getColor(R.color.dark_md_theme_background_highContrast)); // Set value text color
         dataSet.setValueTextSize(10f);
@@ -253,11 +260,12 @@ public class WorkoutDetailsFragment extends Fragment {
         String artist = songDetails.get("artist");
         String timestamp = song.get("timestamp");
         String bpm = song.get("avgHeartRate");
+        String distance = song.get("distance");
 
         // Create an alert dialog to show song details
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Song Details")
-                .setMessage("Title: " + title + "\nArtist: " + artist + "\nTimestamp: " + timestamp + "\n Average Heart Rate: " + bpm)
+                .setMessage("Title: " + title + "\nArtist: " + artist + "\nTimestamp: " + timestamp + "\n Average Heart Rate: " + bpm + "\nDistance: " + distance + " m")
                 .setPositiveButton("OK", null)
                 .show();
     }

@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class HeartBeatOpenHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
     private static final String DATABASE_NAME = "heartbeat";
 
     public static final String SONGS_TABLE_NAME = "songs";
