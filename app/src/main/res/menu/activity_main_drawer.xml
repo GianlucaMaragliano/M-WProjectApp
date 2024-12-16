@@ -23,5 +23,10 @@
             android:id="@+id/nav_history"
             android:icon="@drawable/baseline_stacked_bar_chart_24"
             android:title="@string/menu_history" />
+
+        <item
+            android:id="@+id/nav_statistics"
+            android:icon="@drawable/baseline_stacked_bar_chart_24"
+            android:title="@string/menu_statistics" />
     </group>
 </menu>

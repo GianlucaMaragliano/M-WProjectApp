@@ -39,4 +39,10 @@
             app:argType="string" />
     </fragment>
 
+    <fragment
+        android:id="@+id/nav_statistics"
+        android:name="com.example.heartbeat.ui.Statistics.StatisticsFragment"
+        android:label="@string/menu_statistics"
+        tools:layout="@layout/fragment_statistics" />
+
 </navigation>
