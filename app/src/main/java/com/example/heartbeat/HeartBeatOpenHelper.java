@@ -324,6 +324,20 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         return totalSeconds;
     }
 
+    // Based on date range return the number of workouts done
+    public int getWorkoutCount(String startDate, String endDate) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT COUNT(DISTINCT id) as count FROM history_workout WHERE date BETWEEN ? AND ?", new String[]{startDate, endDate});
+
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(cursor.getColumnIndexOrThrow("count"));
+        }
+        cursor.close();
+        Log.d("DBQuery", "Total workout count: " + count);
+        return count;
+    }
+
 //    #############################################################################################################
 
 

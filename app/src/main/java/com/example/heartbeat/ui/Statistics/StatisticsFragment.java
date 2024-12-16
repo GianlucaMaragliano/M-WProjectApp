@@ -108,6 +108,10 @@ public class StatisticsFragment extends Fragment {
             textViewMostPlayedSong.setText("Most played song: " + song.get("title") + " by " + song.get("artist"));
         }
 
+        int totalNumberOfWorkouts = dbHelper.getWorkoutCount(weekStartDateStr, dateStr);
+        TextView textViewTotalNumberOfWorkouts = getView().findViewById(R.id.textViewTotalNumberOfWorkouts);
+        textViewTotalNumberOfWorkouts.setText("Total number of workouts: " + totalNumberOfWorkouts);
+
         String totalWeekDistance = dbHelper.getWeekTotalDistance(weekStartDateStr, dateStr);
         TextView textViewTotalWeekDistance = getView().findViewById(R.id.textViewTotalWeekDistance);
         textViewTotalWeekDistance.setText("Total distance covered: " + totalWeekDistance + " m");
