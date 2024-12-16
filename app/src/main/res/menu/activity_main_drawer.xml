@@ -10,11 +10,6 @@
             android:title="@string/menu_workout" />
 
         <item
-            android:id="@+id/nav_play"
-            android:icon="@drawable/baseline_play_circle_filled_24"
-            android:title="@string/menu_play_song" />
-
-        <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/music_1005_svgrepo_com"
             android:title="@string/menu_add_song" />
