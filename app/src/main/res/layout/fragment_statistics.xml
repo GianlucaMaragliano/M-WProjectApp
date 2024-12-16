@@ -4,6 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/largerConstraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
     <!-- Calendar Button -->
     <ImageButton
         android:id="@+id/calendar_button"
@@ -20,106 +30,199 @@
         app:srcCompat="@drawable/calendar_time_svgrepo_com" />
 
     <!-- Workout of the Week TextView -->
+
+    <!-- Most Played Song -->
     <TextView
         android:id="@+id/textViewWorkoutOfWeek"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
         android:text="Workout of Dec 02, 2024"
         android:textSize="22sp"
         android:textStyle="bold"
-        android:layout_marginTop="32dp"
-        android:padding="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Most Played Song -->
-    <TextView
-        android:id="@+id/textViewMostPlayedSongs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Most played song"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/textViewWorkoutOfWeek"
-        app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMostPlayedSongs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="16dp"
-        android:padding="8dp"
-        android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/textViewMostPlayedSongs"
-        android:scrollbars="vertical" />
 
-    <TextView
-        android:id="@+id/textViewWorkoutSummary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewMostPlayedSongs"
-        app:layout_constraintBottom_toTopOf="@id/workoutDetailsLayout"
-        android:layout_marginBottom="8dp"
-        android:textColor="@android:color/black" />
-
-    <LinearLayout
-        android:id="@+id/workoutDetailsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/textViewWorkoutSummary"
-        android:padding="8dp" />
-
-    <!-- Total Week Distance -->
-    <TextView
-        android:id="@+id/textViewTotalWeekDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Weekly distance covered"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/workoutDetailsLayout"
-        app:layout_constraintStart_toStartOf="parent" />
+        <!-- Total Week Distance -->
 
     <!-- Avg Heart Rate -->
-    <TextView
-        android:id="@+id/textViewAvgHeartRate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Average heart rate"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/textViewTotalWeekDistance"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Usual Workout Time -->
-    <TextView
-        android:id="@+id/textViewUsualWorkoutTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Usual workout time"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/textViewAvgHeartRate"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Total Workout Time -->
-    <TextView
-        android:id="@+id/textViewTotalTimeWorkout"
-        android:layout_width="wrap_content"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/Framelayout"
+            android:layout_width="350dp"
+            android:layout_height="203dp"
+            android:layout_marginTop="92dp"
+            android:background="@drawable/round_outline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textViewMostPlayedSongs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:padding="8dp"
+                android:text="Most played song"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewMostPlayedSongs"
+                android:layout_width="350dp"
+                android:layout_height="137dp"
+                android:layout_marginTop="16dp"
+                android:clipToPadding="false"
+                android:padding="8dp"
+                android:scrollbars="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewMostPlayedSongs"
+                app:layout_constraintVertical_bias="0.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout1"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:text="Total workout time"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/textViewUsualWorkoutTime"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="20dp"
+        android:background="@drawable/round_outline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Framelayout">
+
+        <TextView
+            android:id="@+id/textViewAvgHeartRate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Average heart rate"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/round_outline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout1">
+
+        <TextView
+            android:id="@+id/textViewUsualWorkoutTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Usual workout time"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/round_outline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+
+        <TextView
+            android:id="@+id/textViewTotalWeekDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Weekly distance covered"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout5"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/round_outline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+
+
+        <TextView
+            android:id="@+id/textViewWorkoutSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <LinearLayout
+                android:id="@+id/workoutDetailsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/textViewWorkoutSummary"
+                app:layout_constraintBottom_toBottomOf="parent">
+            </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout4"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/round_outline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
+
+        <TextView
+            android:id="@+id/textViewTotalTimeWorkout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Total workout time"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
