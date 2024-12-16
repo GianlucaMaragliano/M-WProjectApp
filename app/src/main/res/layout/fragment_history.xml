@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Workout of Dec 02, 2024"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:clickable="true"
         android:focusable="true"
         android:layout_marginTop="16dp"

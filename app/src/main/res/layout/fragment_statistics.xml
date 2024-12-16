@@ -14,7 +14,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-    <!-- Calendar Button -->
     <ImageButton
         android:id="@+id/calendar_button"
         style="?attr/materialButtonOutlinedStyle"
@@ -43,16 +42,6 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-
-        <!-- Total Week Distance -->
-
-    <!-- Avg Heart Rate -->
-
-    <!-- Usual Workout Time -->
-
-    <!-- Total Workout Time -->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/Framelayout"
@@ -181,8 +170,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
