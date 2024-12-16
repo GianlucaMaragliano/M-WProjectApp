@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -331,19 +332,26 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         return totalSeconds;
     }
 
-    // Based on date range return the number of workouts done
-    public int getWorkoutCount(String startDate, String endDate) {
+    // Based on date range return workouts ids  and dates of the week
+    public List<Pair<String, String>> getWorkoutIdsAndDatesByDateRange(String startDate, String endDate) {
         SQLiteDatabase database = this.getReadableDatabase();
-        Cursor cursor = database.rawQuery("SELECT COUNT(DISTINCT id) as count FROM history_workout WHERE date BETWEEN ? AND ?", new String[]{startDate, endDate});
+        Cursor cursor = database.rawQuery(
+                "SELECT DISTINCT id, date FROM history_workout WHERE date BETWEEN ? AND ?",
+                new String[]{startDate, endDate}
+        );
 
-        int count = 0;
+        List<Pair<String, String>> workoutData = new ArrayList<>();
         if (cursor.moveToFirst()) {
-            count = cursor.getInt(cursor.getColumnIndexOrThrow("count"));
+            do {
+                String id = cursor.getString(cursor.getColumnIndexOrThrow("id"));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                workoutData.add(new Pair<>(id, date));
+            } while (cursor.moveToNext());
         }
         cursor.close();
-        Log.d("DBQuery", "Total workout count: " + count);
-        return count;
+        return workoutData;
     }
+
 
 //    #############################################################################################################
 

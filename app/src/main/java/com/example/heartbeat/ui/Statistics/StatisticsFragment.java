@@ -3,10 +3,12 @@ package com.example.heartbeat.ui.Statistics;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,9 +23,12 @@ import com.example.heartbeat.R;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class StatisticsFragment extends Fragment {
 
@@ -108,20 +113,44 @@ public class StatisticsFragment extends Fragment {
         // Set up RecyclerView for most played songs
         TextView textViewMostPlayedSongs = getView().findViewById(R.id.textViewMostPlayedSongs);
         if (listMostPlayedSongs.isEmpty()) {
-            textViewMostPlayedSongs.setText("No songs played in the last week");
+            textViewMostPlayedSongs.setText("No songs played in the last week.");
             return;
         }
-        textViewMostPlayedSongs.setText("Most played songs in the week");
+        textViewMostPlayedSongs.setText("Most played songs in the week:");
         RecyclerView recyclerView = getView().findViewById(R.id.recyclerViewMostPlayedSongs);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         MostPlayedSongsAdapter adapter = new MostPlayedSongsAdapter(listMostPlayedSongs);
         recyclerView.setAdapter(adapter);
 
-        // Other stats...
-        int totalNumberOfWorkouts = dbHelper.getWorkoutCount(weekStartDateStr, dateStr);
-        TextView textViewTotalNumberOfWorkouts = getView().findViewById(R.id.textViewTotalNumberOfWorkouts);
-        textViewTotalNumberOfWorkouts.setText("Total number of workouts: " + totalNumberOfWorkouts);
+        // Retrieve workout IDs and dates
+        List<Pair<String, String>> workoutData = dbHelper.getWorkoutIdsAndDatesByDateRange(weekStartDateStr, dateStr);
+
+        // Map to store unique workouts per date
+        Map<String, Set<String>> workoutsByDate = new HashMap<>();
+        for (Pair<String, String> workout : workoutData) {
+            String date = workout.second; // Date of the workout
+            String workoutId = workout.first; // Workout ID
+            workoutsByDate.computeIfAbsent(date, k -> new HashSet<>()).add(workoutId);
+        }
+
+        // Build the summary string
+        StringBuilder summary = new StringBuilder();
+        int totalWorkouts = 0;
+        for (Map.Entry<String, Set<String>> entry : workoutsByDate.entrySet()) {
+            String date = entry.getKey();
+            int workoutCount = entry.getValue().size();
+            totalWorkouts += workoutCount;
+            summary.append(workoutCount).append(" workout").append(workoutCount > 1 ? "s" : "").append(" on date ").append(date).append("\n");
+        }
+
+        // Display the total count and details in a TextView
+        TextView textViewWorkoutSummary = getView().findViewById(R.id.textViewWorkoutSummary);
+        if (totalWorkouts == 0) {
+            textViewWorkoutSummary.setText("No workouts performed in the last week.");
+        } else {
+            textViewWorkoutSummary.setText(totalWorkouts + " workouts performed in the week:\n" + summary.toString().trim());
+        }
 
         String totalWeekDistance = dbHelper.getWeekTotalDistance(weekStartDateStr, dateStr);
         TextView textViewTotalWeekDistance = getView().findViewById(R.id.textViewTotalWeekDistance);
