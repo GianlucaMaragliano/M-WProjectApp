@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.heartbeat.HeartBeatOpenHelper;
 import com.example.heartbeat.R;
@@ -93,21 +95,30 @@ public class StatisticsFragment extends Fragment {
         HeartBeatOpenHelper dbHelper = new HeartBeatOpenHelper(getContext());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String dateStr = dateFormat.format(selectedDate);
-        // compute seven days before the selected date
+
+        // Compute seven days before the selected date
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(selectedDate);
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         String weekStartDateStr = dateFormat.format(calendar.getTime());
-        textViewWorkoutOfWeek = getView().findViewById(R.id.textViewWorkoutOfWeek);
-        textViewWorkoutOfWeek.setText("Workout of the week:\n" + weekStartDateStr + " - " + dateStr);
 
-        String songId = dbHelper.getMostPlayedSong(weekStartDateStr, dateStr);
-        Map<String, String> song = dbHelper.getSongById(songId);
-        if (song != null) {
-            TextView textViewMostPlayedSong = getView().findViewById(R.id.textViewMostPlayedSong);
-            textViewMostPlayedSong.setText("Most played song: " + song.get("title") + " by " + song.get("artist"));
+        // Retrieve most played songs
+        List<Map<String, String>> listMostPlayedSongs = dbHelper.getMostPlayedSongs(weekStartDateStr, dateStr);
+
+        // Set up RecyclerView for most played songs
+        TextView textViewMostPlayedSongs = getView().findViewById(R.id.textViewMostPlayedSongs);
+        if (listMostPlayedSongs.isEmpty()) {
+            textViewMostPlayedSongs.setText("No songs played in the last week");
+            return;
         }
+        textViewMostPlayedSongs.setText("Most played songs in the week");
+        RecyclerView recyclerView = getView().findViewById(R.id.recyclerViewMostPlayedSongs);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        MostPlayedSongsAdapter adapter = new MostPlayedSongsAdapter(listMostPlayedSongs);
+        recyclerView.setAdapter(adapter);
 
+        // Other stats...
         int totalNumberOfWorkouts = dbHelper.getWorkoutCount(weekStartDateStr, dateStr);
         TextView textViewTotalNumberOfWorkouts = getView().findViewById(R.id.textViewTotalNumberOfWorkouts);
         textViewTotalNumberOfWorkouts.setText("Total number of workouts: " + totalNumberOfWorkouts);
@@ -117,7 +128,6 @@ public class StatisticsFragment extends Fragment {
         textViewTotalWeekDistance.setText("Total distance covered: " + totalWeekDistance + " m");
 
         String avgHeartRate = dbHelper.getWeekAvgHeartRate(weekStartDateStr, dateStr);
-        // convert to int
         avgHeartRate = avgHeartRate.split("\\.")[0];
         TextView textViewAvgHeartRate = getView().findViewById(R.id.textViewAvgHeartRate);
         textViewAvgHeartRate.setText("Average heart rate: " + avgHeartRate + " bpm");
@@ -127,10 +137,9 @@ public class StatisticsFragment extends Fragment {
         textViewUsualWorkoutTime.setText("Most usual workout time: " + usualWorkoutTime);
 
         String totalTimeWorkoutSeconds = dbHelper.getTotalWorkoutTime(weekStartDateStr, dateStr);
-        // convert into hours and minutes, given is in seconds
         int totalTimeWorkout = Integer.parseInt(totalTimeWorkoutSeconds) / 60;
         TextView textViewTotalTimeWorkout = getView().findViewById(R.id.textViewTotalTimeWorkout);
         textViewTotalTimeWorkout.setText("Total time spent working out: " + totalTimeWorkout + " minutes");
-
     }
+
 }

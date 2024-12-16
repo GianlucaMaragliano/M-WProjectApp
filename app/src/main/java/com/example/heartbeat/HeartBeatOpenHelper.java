@@ -254,19 +254,26 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         return song;
     }
 
-    // Based on a date range returns the most played song
-    public String getMostPlayedSong(String startDate, String endDate) {
+    // Based on a date range returns all songs played, sorted by the number of times they were played
+    public List<Map<String, String>> getMostPlayedSongs(String startDate, String endDate) {
         SQLiteDatabase database = this.getReadableDatabase();
-        Cursor cursor = database.rawQuery("SELECT songId, COUNT(songId) as count FROM history_workout WHERE date BETWEEN ? AND ? GROUP BY songId ORDER BY count DESC LIMIT 1", new String[]{startDate, endDate});
+        Cursor cursor = database.rawQuery("SELECT songId, COUNT(songId) as count FROM history_workout WHERE date BETWEEN ? AND ? GROUP BY songId ORDER BY count DESC", new String[]{startDate, endDate});
 
-        String songId = null;
+        List<Map<String, String>> mostPlayedSongs = new ArrayList<>();
         if (cursor.moveToFirst()) {
-            songId = cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_ID));
+            do {
+                Map<String, String> song = new HashMap<>();
+                song.put("songId", cursor.getString(cursor.getColumnIndexOrThrow("songId")));
+                song.put("count", cursor.getString(cursor.getColumnIndexOrThrow("count")));
+                mostPlayedSongs.add(song);
+            } while (cursor.moveToNext());
         }
         cursor.close();
-        Log.d("DBQuery", "Most played song: " + songId);
-        return songId;
+        Log.d("DBQuery", "Most played songs: " + mostPlayedSongs);
+        return mostPlayedSongs;
     }
+
+
 
     // Based on the data range returns the total distance run in the week
     public String getWeekTotalDistance(String startDate, String endDate) {
