@@ -254,6 +254,76 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         return song;
     }
 
+    // Based on a date range returns the most played song
+    public String getMostPlayedSong(String startDate, String endDate) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT songId, COUNT(songId) as count FROM history_workout WHERE date BETWEEN ? AND ? GROUP BY songId ORDER BY count DESC LIMIT 1", new String[]{startDate, endDate});
+
+        String songId = null;
+        if (cursor.moveToFirst()) {
+            songId = cursor.getString(cursor.getColumnIndexOrThrow(WORKOUT_KEY_SONG_ID));
+        }
+        cursor.close();
+        Log.d("DBQuery", "Most played song: " + songId);
+        return songId;
+    }
+
+    // Based on the data range returns the total distance run in the week
+    public String getWeekTotalDistance(String startDate, String endDate) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT SUM(songRunDistance) as totalDistance FROM history_workout WHERE date BETWEEN ? AND ?", new String[]{startDate, endDate});
+
+        String totalDistance = null;
+        if (cursor.moveToFirst()) {
+            totalDistance = cursor.getString(cursor.getColumnIndexOrThrow("totalDistance"));
+        }
+        cursor.close();
+        Log.d("DBQuery", "Total distance run in the week: " + totalDistance);
+        return totalDistance;
+    }
+
+    // Based on the data range returns the average heart rate in the week
+    public String getWeekAvgHeartRate(String startDate, String endDate) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT AVG(avgHeartRate) as avgHeartRate FROM history_workout WHERE date BETWEEN ? AND ?", new String[]{startDate, endDate});
+
+        String avgHeartRate = null;
+        if (cursor.moveToFirst()) {
+            avgHeartRate = cursor.getString(cursor.getColumnIndexOrThrow("avgHeartRate"));
+        }
+        cursor.close();
+        Log.d("DBQuery", "Average heart rate in the week: " + avgHeartRate);
+        return avgHeartRate;
+    }
+
+    // Based on the timestamps in a date range return the most usual range time where workouts were done (e.g. 9:00 - 11:00)
+    public String getMostUsualTimeRange(String startDate, String endDate) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT strftime('%H', timestamp) as hour, COUNT(strftime('%H', timestamp)) as count FROM history_workout WHERE date BETWEEN ? AND ? GROUP BY hour ORDER BY count DESC LIMIT 1", new String[]{startDate, endDate});
+
+        String mostUsualTime = null;
+        if (cursor.moveToFirst()) {
+            mostUsualTime = cursor.getString(cursor.getColumnIndexOrThrow("hour")) + ":00 - " + cursor.getString(cursor.getColumnIndexOrThrow("hour")) + ":59";
+        }
+        cursor.close();
+        Log.d("DBQuery", "Most usual workout time: " + mostUsualTime);
+        return mostUsualTime;
+    }
+
+    // Based on the data range return the total number of hours, hours and minutes, or minutes of workout
+    public String getTotalWorkoutTime(String startDate, String endDate) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT SUM(strftime('%s', timestamp) - strftime('%s', '00:00:00')) as totalSeconds FROM history_workout WHERE date BETWEEN ? AND ?", new String[]{startDate, endDate});
+
+        String totalSeconds = null;
+        if (cursor.moveToFirst()) {
+            totalSeconds = cursor.getString(cursor.getColumnIndexOrThrow("totalSeconds"));
+        }
+        cursor.close();
+        Log.d("DBQuery", "Total workout time: " + totalSeconds);
+        return totalSeconds;
+    }
+
 //    #############################################################################################################
 
 

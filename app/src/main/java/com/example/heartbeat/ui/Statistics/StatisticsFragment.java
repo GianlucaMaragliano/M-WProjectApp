@@ -31,18 +31,26 @@ public class StatisticsFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_statistics, container, false);
+        // Inflate the fragment's layout
+        return inflater.inflate(R.layout.fragment_statistics, container, false);
+    }
 
-        selectedDate = new Date();
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        calendarButton = rootView.findViewById(R.id.calendar_button);
+        // Initialize views after the fragment's view is created
+        selectedDate = new Date(); // Default selected date is the current date
+
+        calendarButton = view.findViewById(R.id.calendar_button);
         calendarButton.setOnClickListener(v -> showDatePicker());
 
         // Initialize the TextView and display the current week's range
-        textViewWorkoutOfWeek = rootView.findViewById(R.id.textViewWorkoutOfWeek);
+        textViewWorkoutOfWeek = view.findViewById(R.id.textViewWorkoutOfWeek);
         displayCurrentWeekRange();
 
-        return rootView;
+        // Call loadWeekWorkoutHistory to load the history for the current date (or selected date)
+        loadWeekWorkoutHistory();
     }
 
     private void displayCurrentWeekRange() {
@@ -93,9 +101,28 @@ public class StatisticsFragment extends Fragment {
         textViewWorkoutOfWeek = getView().findViewById(R.id.textViewWorkoutOfWeek);
         textViewWorkoutOfWeek.setText("Workout of the week:\n" + weekStartDateStr + " - " + dateStr);
 
-//        String mostPlayedSong = dbHelper.getMostPlayedSong(weekStartDateStr, dateStr);
-//        TextView textViewMostPlayedSong = getView().findViewById(R.id.textViewMostPlayedSong);
-//        textViewMostPlayedSong.setText("Most played song: " + mostPlayedSong);
+        String songId = dbHelper.getMostPlayedSong(weekStartDateStr, dateStr);
+        Map<String, String> song = dbHelper.getSongById(songId);
+        if (song != null) {
+            TextView textViewMostPlayedSong = getView().findViewById(R.id.textViewMostPlayedSong);
+            textViewMostPlayedSong.setText("Most played song: " + song.get("title") + " by " + song.get("artist"));
+        }
+
+        String totalWeekDistance = dbHelper.getWeekTotalDistance(weekStartDateStr, dateStr);
+        TextView textViewTotalWeekDistance = getView().findViewById(R.id.textViewTotalWeekDistance);
+        textViewTotalWeekDistance.setText("Total distance covered: " + totalWeekDistance + " m");
+
+        String avgHeartRate = dbHelper.getWeekAvgHeartRate(weekStartDateStr, dateStr);
+        TextView textViewAvgHeartRate = getView().findViewById(R.id.textViewAvgHeartRate);
+        textViewAvgHeartRate.setText("Average heart rate: " + avgHeartRate + " bpm");
+
+        String usualWorkoutTime = dbHelper.getMostUsualTimeRange(weekStartDateStr, dateStr);
+        TextView textViewUsualWorkoutTime = getView().findViewById(R.id.textViewUsualWorkoutTime);
+        textViewUsualWorkoutTime.setText("Most usual workout time: " + usualWorkoutTime);
+
+        String totalTimeWorkout = dbHelper.getTotalWorkoutTime(weekStartDateStr, dateStr);
+        TextView textViewTotalTimeWorkout = getView().findViewById(R.id.textViewTotalTimeWorkout);
+        textViewTotalTimeWorkout.setText("Total time spent working out: " + totalTimeWorkout + " minutes");
 
     }
 }
