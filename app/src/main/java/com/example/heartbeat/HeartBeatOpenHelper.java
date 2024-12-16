@@ -274,11 +274,118 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    // #######################################
+// Statistics Query Methods
 
+    public int getTotalSteps() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT SUM(steps) FROM step_tracker", null);
+        int totalSteps = 0;
+        if (cursor.moveToFirst()) {
+            totalSteps = cursor.getInt(0);
+        }
+        cursor.close();
+        return totalSteps;
+    }
 
+    public int getAverageHeartRate() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT AVG(heart_rate) FROM workouts", null);
+        int averageHeartRate = 0;
+        if (cursor.moveToFirst()) {
+            averageHeartRate = cursor.getInt(0);
+        }
+        cursor.close();
+        return averageHeartRate;
+    }
 
-//    #############################################################################################################
+    public int getAverageWorkoutTime() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT AVG(duration) FROM workouts", null);
+        int averageWorkoutTime = 0;
+        if (cursor.moveToFirst()) {
+            averageWorkoutTime = cursor.getInt(0);
+        }
+        cursor.close();
+        return averageWorkoutTime;
+    }
 
+    public int getMostStepsDay() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT MAX(steps) FROM step_tracker", null);
+        int mostStepsDay = 0;
+        if (cursor.moveToFirst()) {
+            mostStepsDay = cursor.getInt(0);
+        }
+        cursor.close();
+        return mostStepsDay;
+    }
+
+    public int getWeeklySteps() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT SUM(steps) FROM step_tracker WHERE date >= date('now', '-7 days')", null);
+        int weeklySteps = 0;
+        if (cursor.moveToFirst()) {
+            weeklySteps = cursor.getInt(0);
+        }
+        cursor.close();
+        return weeklySteps;
+    }
+
+    public String getMostPlayedSong() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT title FROM songs ORDER BY play_count DESC LIMIT 1", null);
+        String mostPlayedSong = "None";
+        if (cursor.moveToFirst()) {
+            mostPlayedSong = cursor.getString(0);
+        }
+        cursor.close();
+        return mostPlayedSong;
+    }
+
+    public String getMostSkippedSong() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT title FROM songs ORDER BY skips DESC LIMIT 1", null);
+        String mostSkippedSong = "None";
+        if (cursor.moveToFirst()) {
+            mostSkippedSong = cursor.getString(0);
+        }
+        cursor.close();
+        return mostSkippedSong;
+    }
+
+    public int getOverallMusicPlayed() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT SUM(play_count) FROM songs", null);
+        int overallMusicPlayed = 0;
+        if (cursor.moveToFirst()) {
+            overallMusicPlayed = cursor.getInt(0);
+        }
+        cursor.close();
+        return overallMusicPlayed;
+    }
+
+    public int getOverallWorkoutTime() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT SUM(duration) FROM workouts", null);
+        int overallWorkoutTime = 0;
+        if (cursor.moveToFirst()) {
+            overallWorkoutTime = cursor.getInt(0);
+        }
+        cursor.close();
+        return overallWorkoutTime;
+    }
+
+    public int getWorkoutTimeWeek() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT SUM(duration) FROM workouts WHERE date >= date('now', '-7 days')", null);
+        int workoutTimeWeek = 0;
+        if (cursor.moveToFirst()) {
+            workoutTimeWeek = cursor.getInt(0);
+        }
+        cursor.close();
+        return workoutTimeWeek;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
