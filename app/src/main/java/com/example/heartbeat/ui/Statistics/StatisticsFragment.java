@@ -117,6 +117,8 @@ public class StatisticsFragment extends Fragment {
         textViewTotalWeekDistance.setText("Total distance covered: " + totalWeekDistance + " m");
 
         String avgHeartRate = dbHelper.getWeekAvgHeartRate(weekStartDateStr, dateStr);
+        // convert to int
+        avgHeartRate = avgHeartRate.split("\\.")[0];
         TextView textViewAvgHeartRate = getView().findViewById(R.id.textViewAvgHeartRate);
         textViewAvgHeartRate.setText("Average heart rate: " + avgHeartRate + " bpm");
 
@@ -124,7 +126,9 @@ public class StatisticsFragment extends Fragment {
         TextView textViewUsualWorkoutTime = getView().findViewById(R.id.textViewUsualWorkoutTime);
         textViewUsualWorkoutTime.setText("Most usual workout time: " + usualWorkoutTime);
 
-        String totalTimeWorkout = dbHelper.getTotalWorkoutTime(weekStartDateStr, dateStr);
+        String totalTimeWorkoutSeconds = dbHelper.getTotalWorkoutTime(weekStartDateStr, dateStr);
+        // convert into hours and minutes, given is in seconds
+        int totalTimeWorkout = Integer.parseInt(totalTimeWorkoutSeconds) / 60;
         TextView textViewTotalTimeWorkout = getView().findViewById(R.id.textViewTotalTimeWorkout);
         textViewTotalTimeWorkout.setText("Total time spent working out: " + totalTimeWorkout + " minutes");
 

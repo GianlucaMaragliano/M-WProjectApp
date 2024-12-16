@@ -112,7 +112,7 @@ public class WorkoutDetailsFragment extends Fragment {
             totalDistance += distance;
         }
 
-        float averageBPM = (float) totalBPM / songDataList.size();
+        Double averageBPM = (double) totalBPM / songDataList.size();
 
         // Find the most played song
         String mostPlayedSong = "";
@@ -126,11 +126,19 @@ public class WorkoutDetailsFragment extends Fragment {
 
         // Build insights text
         StringBuilder insights = new StringBuilder();
-        insights.append("Average Heart Rate: ").append(String.format("%.2f", averageBPM)).append("\n");
-        insights.append("Peak BPM: ").append(peakBPM).append(" (").append(peakSong).append(")\n");
-        insights.append("Lowest BPM: ").append(lowestBPM).append(" (").append(lowestSong).append(")\n");
+        // convert averageBPM to int
+        int averageBPMInt = (int) Math.round(averageBPM);
+        insights.append("Average Heart Rate: ").append(averageBPMInt).append("\n");
+        // convert peakBPM to int
+        int peakBPMInt = (int) Math.round(peakBPM);
+        insights.append("Peak BPM: ").append(peakBPMInt).append(" (").append(peakSong).append(")\n");
+        // convert lowestBPM to int
+        int lowestBPMInt = (int) Math.round(lowestBPM);
+        insights.append("Lowest BPM: ").append(lowestBPMInt).append(" (").append(lowestSong).append(")\n");
         insights.append("Most Played Song: ").append(mostPlayedSong).append(" (").append(maxPlays).append(" times)\n");
         insights.append("Duration of High Intensity (> ").append(highIntensityThreshold).append(" BPM): ").append(highIntensityDuration).append(" songs\n");
+        // round totalDistance to 2 decimal places
+        totalDistance = Math.round(totalDistance * 100.0) / 100.0;
         insights.append("Total Distance: ").append(totalDistance).append(" m");
         insightsTextView.setText(insights.toString());
     }
@@ -260,12 +268,13 @@ public class WorkoutDetailsFragment extends Fragment {
         String artist = songDetails.get("artist");
         String timestamp = song.get("timestamp");
         String bpm = song.get("avgHeartRate");
+        int bpmInt = (int) Double.parseDouble(bpm);
         String distance = song.get("distance");
 
         // Create an alert dialog to show song details
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Song Details")
-                .setMessage("Title: " + title + "\nArtist: " + artist + "\nTimestamp: " + timestamp + "\n Average Heart Rate: " + bpm + "\nDistance: " + distance + " m")
+                .setMessage("Title: " + title + "\nArtist: " + artist + "\nTimestamp: " + timestamp + "\n Average Heart Rate: " + bpmInt + "\nDistance: " + distance + " m")
                 .setPositiveButton("OK", null)
                 .show();
     }
