@@ -270,6 +270,7 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        database.close();
         Log.d("DBQuery", "Most played songs: " + mostPlayedSongs);
         return mostPlayedSongs;
     }
@@ -287,6 +288,9 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         Log.d("DBQuery", "Total distance run in the week: " + totalDistance);
+        if (totalDistance == null) {
+            return "0";
+        }
         return totalDistance;
     }
 
@@ -299,8 +303,11 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             avgHeartRate = cursor.getString(cursor.getColumnIndexOrThrow("avgHeartRate"));
         }
-        cursor.close();
         Log.d("DBQuery", "Average heart rate in the week: " + avgHeartRate);
+        cursor.close();
+        if (avgHeartRate == null) {
+            return "0";
+        }
         return avgHeartRate;
     }
 
@@ -313,8 +320,11 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             mostUsualTime = cursor.getString(cursor.getColumnIndexOrThrow("hour")) + ":00 - " + cursor.getString(cursor.getColumnIndexOrThrow("hour")) + ":59";
         }
-        cursor.close();
         Log.d("DBQuery", "Most usual workout time: " + mostUsualTime);
+        cursor.close();
+        if (mostUsualTime == null) {
+            return "No Workouts";
+        }
         return mostUsualTime;
     }
 
@@ -327,8 +337,12 @@ public class HeartBeatOpenHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             totalSeconds = cursor.getString(cursor.getColumnIndexOrThrow("totalSeconds"));
         }
-        cursor.close();
         Log.d("DBQuery", "Total workout time: " + totalSeconds);
+        cursor.close();
+        if (totalSeconds == null) {
+            return "0";
+        }
+        database.close();
         return totalSeconds;
     }
 

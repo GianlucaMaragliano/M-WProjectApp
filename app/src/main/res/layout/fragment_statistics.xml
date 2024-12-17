@@ -46,7 +46,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/Framelayout"
             android:layout_width="350dp"
-            android:layout_height="203dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="92dp"
             android:background="@drawable/round_outline"
             app:layout_constraintEnd_toEndOf="parent"

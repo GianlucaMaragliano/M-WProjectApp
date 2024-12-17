@@ -75,7 +75,7 @@ public class StatisticsFragment extends Fragment {
         String weekEndDateStr = dateFormat.format(selectedDate);
 
         // Update the TextView
-        textViewWorkoutOfWeek.setText("Workout of the week:\n" + weekStartDateStr + " - " + weekEndDateStr);
+        textViewWorkoutOfWeek.setText("Workouts of the week:\n" + weekStartDateStr + " - " + weekEndDateStr);
     }
 
     private void showDatePicker() {
@@ -107,21 +107,25 @@ public class StatisticsFragment extends Fragment {
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         String weekStartDateStr = dateFormat.format(calendar.getTime());
 
+        textViewWorkoutOfWeek.setText("Workouts of the week:\n" + weekStartDateStr + " - " + dateStr);
+
         // Retrieve most played songs
         List<Map<String, String>> listMostPlayedSongs = dbHelper.getMostPlayedSongs(weekStartDateStr, dateStr);
 
         // Set up RecyclerView for most played songs
         TextView textViewMostPlayedSongs = getView().findViewById(R.id.textViewMostPlayedSongs);
+        RecyclerView recyclerView = getView().findViewById(R.id.recyclerViewMostPlayedSongs);
         if (listMostPlayedSongs.isEmpty()) {
             textViewMostPlayedSongs.setText("No songs played in the last week.");
-            return;
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            textViewMostPlayedSongs.setText("Most played songs in the week:");
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            MostPlayedSongsAdapter adapter = new MostPlayedSongsAdapter(listMostPlayedSongs);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setVisibility(View.VISIBLE);
         }
-        textViewMostPlayedSongs.setText("Most played songs in the week:");
-        RecyclerView recyclerView = getView().findViewById(R.id.recyclerViewMostPlayedSongs);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        MostPlayedSongsAdapter adapter = new MostPlayedSongsAdapter(listMostPlayedSongs);
-        recyclerView.setAdapter(adapter);
 
         // Retrieve workout IDs and dates
         List<Pair<String, String>> workoutData = dbHelper.getWorkoutIdsAndDatesByDateRange(weekStartDateStr, dateStr);
@@ -170,5 +174,4 @@ public class StatisticsFragment extends Fragment {
         TextView textViewTotalTimeWorkout = getView().findViewById(R.id.textViewTotalTimeWorkout);
         textViewTotalTimeWorkout.setText("Total time spent working out: " + totalTimeWorkout + " minutes");
     }
-
 }

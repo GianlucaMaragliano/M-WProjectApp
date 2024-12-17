@@ -50,11 +50,15 @@ public class SoundManager {
     }
 
     public void saveWorkoutSong(String workoutId, double avgBpm, double runDistance) {
+        if (currentSongId == null) {
+            Log.e("WorkoutSong", "Current song ID is null!");
+            return;
+        }
+
         String dateStr = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        String timeStr = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());  // Gets current time in the format "23:59:59"
+        String timeStr = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());  // Gets current time in the format "23:59:59"
 
         Log.d("WorkoutSong", "Saving workout song: " + currentSongTitle + " - " + currentSongArtist + " - " + avgBpm + " - " + runDistance);
-
         databaseHelper.insertWorkoutSong(workoutId, timeStr, dateStr, currentSongId, avgBpm, runDistance);
     }
 
@@ -63,6 +67,7 @@ public class SoundManager {
         List<Map<String, String>> songs = databaseHelper.getSongsByBpmRange(heartRate, heartRate + 10);
         if (songs.isEmpty()) {
             Toast.makeText(context, "No songs found for current BPM range!", Toast.LENGTH_SHORT).show();
+            currentSongId = null;
             return;
         }
 
