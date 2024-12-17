@@ -38,7 +38,7 @@ public class MostPlayedSongsAdapter extends RecyclerView.Adapter<MostPlayedSongs
     public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
         Map<String, String> song = songs.get(position);
         Map<String, String> songObj = dbHelper.getSongById(song.get("songId"));
-        holder.songId.setText(songObj.get("artist") + " - " + songObj.get("title"));
+        holder.songId.setText(songObj.get("title") + " - " + songObj.get("artist"));
         holder.playCount.setText("Played " + song.get("count") + " times");
     }
 
