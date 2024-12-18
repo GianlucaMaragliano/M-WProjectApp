@@ -168,10 +168,5 @@ public class StatisticsFragment extends Fragment {
         String usualWorkoutTime = dbHelper.getMostUsualTimeRange(weekStartDateStr, dateStr);
         TextView textViewUsualWorkoutTime = getView().findViewById(R.id.textViewUsualWorkoutTime);
         textViewUsualWorkoutTime.setText("Most usual workout time: " + usualWorkoutTime);
-
-        String totalTimeWorkoutSeconds = dbHelper.getTotalWorkoutTime(weekStartDateStr, dateStr);
-        int totalTimeWorkout = Integer.parseInt(totalTimeWorkoutSeconds) / 60;
-        TextView textViewTotalTimeWorkout = getView().findViewById(R.id.textViewTotalTimeWorkout);
-        textViewTotalTimeWorkout.setText("Total time spent working out: " + totalTimeWorkout + " minutes");
     }
 }

@@ -175,6 +175,7 @@ public class WorkoutDetailsFragment extends Fragment {
         for (int i = 0; i < songsList.size(); i++) {
             Map<String, String> song = songsList.get(i);
             String timestamp = song.get("timestamp");
+            timestamp = timestamp.substring(0, timestamp.length() - 3);
             String bpmString = song.get("avgHeartRate");
 
             try {
